@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 type StoredPost = {
   id: string;
   title: string;
+  slug?: string;
   tags: string[];
   cover?: string;
   excerpt: string;
@@ -89,7 +90,8 @@ const AdminPage: React.FC = () => {
 
   if (!authed) return <LoginGate onUnlock={()=>setAuthed(true)} />;
 
-  const startNew = () => setDraft({ id: crypto.randomUUID(), title: '', tags: [], cover: '', excerpt: '', contentHtml: '', date: new Date().toISOString(), readMinutes: 5, published: false });
+  const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-');
+  const startNew = () => setDraft({ id: crypto.randomUUID(), title: '', slug: '', tags: [], cover: '', excerpt: '', contentHtml: '', date: new Date().toISOString(), readMinutes: 5, published: false });
   const editPost = (p: StoredPost) => setDraft({ ...p });
   const removePost = (id: string) => setPosts(ps => ps.filter(p => p.id !== id));
   const saveDraft = () => { if (!draft) return; setPosts(ps => { const i = ps.findIndex(p=>p.id===draft.id); if (i>=0) { const copy=[...ps]; copy[i]=draft; return copy; } return [draft, ...ps]; }); setDraft(null); };
@@ -109,7 +111,8 @@ const AdminPage: React.FC = () => {
         {draft && (
           <div className="bg-white ring-1 ring-gray-100 rounded-xl shadow-soft p-6 mb-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input value={draft.title} onChange={e=>setDraft({ ...draft, title: e.target.value })} placeholder="Title" className="border rounded-md p-3 w-full" />
+              <input value={draft.title} onChange={e=>{ const title=e.target.value; const auto = draft.slug ? draft.slug : toSlug(title); setDraft({ ...draft, title, slug: auto }); }} placeholder="Title" className="border rounded-md p-3 w-full" />
+              <input value={draft.slug||''} onChange={e=>setDraft({ ...draft, slug: toSlug(e.target.value) })} placeholder="Slug (optional) e.g. designing-fast-web-apps" className="border rounded-md p-3 w-full" />
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Featured image</label>
                 <input

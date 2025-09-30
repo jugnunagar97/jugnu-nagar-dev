@@ -6,6 +6,7 @@ import Home from './components/Home';
 import BlogPage from './components/BlogPage';
 import AdminPage from './components/AdminPage';
 import NotFoundPage from './components/NotFoundPage';
+import BlogPostPage from './components/BlogPostPage';
 // Removed dropdown pages
 
 const ScrollManager: React.FC = () => {
@@ -45,6 +46,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path=":slug" element={<BlogPostPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

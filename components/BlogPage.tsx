@@ -38,7 +38,7 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => (
         ))}
       </div>
     </div>
-    <div className="p-6 flex-1 flex flex-col">
+    <a href={`/${(post as any).slug || post.id}`} className="p-6 flex-1 flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 rounded">
       <h3 className="font-heading text-2xl font-semibold text-gray-900 leading-snug">
         {post.title}
       </h3>
@@ -51,7 +51,7 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => (
       <div className="mt-5 pt-4 border-t border-gray-100 text-brand-blue text-sm font-semibold">
         Read more →
       </div>
-    </div>
+    </a>
   </article>
 );
 
