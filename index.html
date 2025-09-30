@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jugnu Nagar — Full Stack Developer</title>
+    <link id="favicon" rel="icon" href="/favicon.ico" />
     <meta name="description" content="Jugnu Nagar — Full Stack Developer building clean, fast, and scalable web applications. Portfolio, services, work, and contact." />
     <link rel="canonical" href="https://jugnunagar.dev/" />
     <meta name="theme-color" content="#2563eb" />
@@ -82,6 +83,13 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root" role="application"></div>
     <script type="module" src="/index.tsx"></script>
+    <script type="module">
+      import iconUrl from '/components/jugnu-nagar.jpg?url';
+      const link = document.getElementById('favicon');
+      if (link && iconUrl) {
+        link.setAttribute('href', iconUrl);
+      }
+    </script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",

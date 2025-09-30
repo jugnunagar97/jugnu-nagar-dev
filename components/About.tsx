@@ -37,26 +37,7 @@ const About: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-20 shadow-2xl rounded-lg overflow-hidden relative group">
-          <a 
-              href="https://vimeo.com/299651375" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              aria-label="Watch intro video on Vimeo"
-              className="block"
-          >
-              <img 
-                  src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                  alt="Video thumbnail of a business meeting"
-                  className="w-full h-auto aspect-video object-cover"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                  <div className="bg-white rounded-full p-3 transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                      <PlayIcon className="w-10 h-10 text-brand-blue" />
-                  </div>
-              </div>
-          </a>
-        </div>
+        
 
 
         <div className="mt-20 text-center text-gray-600 leading-relaxed max-w-3xl mx-auto">

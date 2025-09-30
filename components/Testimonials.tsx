@@ -81,7 +81,7 @@ const Testimonials: React.FC = () => {
           <p className="mt-3 text-gray-500">Real feedback from product leaders and engineers I’ve worked with.</p>
           <div className="w-20 h-1 bg-brand-blue mx-auto mt-6 rounded-full" />
         </div>
-
+        
         {/* Rotating marquee row - pauses on hover */}
         <div className="mt-14 overflow-hidden py-2 relative">
           {/* Edge masks for nicer cut-off */}
