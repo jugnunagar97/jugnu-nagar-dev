@@ -8,10 +8,28 @@ type Post = {
   date: string;
   tags: string[];
   readMinutes: number;
+  slug?: string;
 };
 
 function getStored(): Post[] {
-  try { const raw = localStorage.getItem('jn_blog_posts_v1'); if (!raw) return []; const parsed = JSON.parse(raw) as any[]; return parsed.filter(p => p.published).map(p => ({ id: p.id, title: p.title, excerpt: p.excerpt, cover: p.cover || 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1400&auto=format&fit=crop', date: p.date, tags: p.tags || [], readMinutes: p.readMinutes || 5 })); } catch { return []; }
+  try {
+    const raw = localStorage.getItem('jn_blog_posts_v1');
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as any[];
+    const toSlug = (s: string) => s?.toLowerCase()?.replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-');
+    return parsed
+      .filter(p => p.published)
+      .map(p => ({
+        id: p.id,
+        title: p.title,
+        excerpt: p.excerpt,
+        cover: p.cover || 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1400&auto=format&fit=crop',
+        date: p.date,
+        tags: p.tags || [],
+        readMinutes: p.readMinutes || 5,
+        slug: p.slug || toSlug(p.title || String(p.id)),
+      }));
+  } catch { return []; }
 }
 
 const TagChip: React.FC<{ active?: boolean; onClick?: () => void }> = ({ active, onClick, children }) => (
@@ -38,8 +56,8 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => (
         ))}
       </div>
     </div>
-    <a href={`/${(post as any).slug || post.id}`} className="p-6 flex-1 flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 rounded">
-      <h3 className="font-heading text-2xl font-semibold text-gray-900 leading-snug">
+    <a href={`/${post.slug || post.id}`} className="p-6 flex-1 flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 rounded">
+      <h3 className="font-heading text-2xl font-medium text-gray-900 leading-snug">
         {post.title}
       </h3>
       <div className="mt-2 text-sm text-gray-500 flex items-center gap-2">

@@ -49,13 +49,19 @@ const BlogPostPage: React.FC = () => {
         <div className="mb-6 text-sm text-gray-500">
           <Link to="/blog" className="hover:underline">← All articles</Link>
         </div>
-        <h1 className="font-heading text-4xl font-semibold text-gray-900 leading-snug">{post.title}</h1>
-        <div className="mt-3 text-sm text-gray-500 flex items-center gap-2">
-          <span>{new Date(post.date).toLocaleDateString()}</span>
-          {post.readMinutes ? (<><span className="w-1 h-1 rounded-full bg-gray-300" /><span>{post.readMinutes} min read</span></>) : null}
-          {post.published === false && (
-            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Draft</span>
-          )}
+        <h1 className="font-heading text-4xl font-medium text-gray-900 leading-snug">{post.title}</h1>
+        <div className="mt-4 flex items-center gap-3">
+          <img src="/components/jugnu-nagar.jpg" alt="Jugnu Nagar" width="36" height="36" className="w-9 h-9 rounded-full object-cover ring-1 ring-gray-200" />
+          <div className="text-sm text-gray-600">
+            <div className="font-medium text-gray-800">Jugnu Nagar</div>
+            <div className="flex items-center gap-2">
+              <span>{new Date(post.date).toLocaleDateString()}</span>
+              {post.readMinutes ? (<><span className="w-1 h-1 rounded-full bg-gray-300" /><span>{post.readMinutes} min read</span></>) : null}
+              {post.published === false && (
+                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Draft</span>
+              )}
+            </div>
+          </div>
         </div>
         {post.cover && (
           <img src={post.cover} alt="" loading="lazy" className="mt-6 rounded-xl ring-1 ring-gray-100 w-full object-cover" />
