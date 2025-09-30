@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
+import { put } from '@vercel/blob';
 
 const app = express();
 app.use(cors());
@@ -102,6 +103,22 @@ app.post('/api/contact', async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ ok: false, error: 'Email failed' });
+  }
+});
+
+app.post('/api/upload', async (req, res) => {
+  try {
+    const chunks = [];
+    req.on('data', c => chunks.push(c));
+    req.on('end', async () => {
+      const buffer = Buffer.concat(chunks);
+      const filename = `covers/${Date.now()}.jpg`;
+      const { url } = await put(filename, buffer, { access: 'public' });
+      res.json({ ok: true, url });
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ ok: false, error: 'Upload failed' });
   }
 });
 

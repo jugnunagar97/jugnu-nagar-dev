@@ -115,12 +115,14 @@ const AdminPage: React.FC = () => {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e)=>{
+                  onChange={async (e)=>{
                     const f = e.target.files?.[0];
                     if (!f) return;
-                    const reader = new FileReader();
-                    reader.onload = () => setDraft({ ...draft, cover: String(reader.result) });
-                    reader.readAsDataURL(f);
+                    const res = await fetch('/api/upload', { method: 'POST', body: f });
+                    if (res.ok) {
+                      const data = await res.json();
+                      setDraft({ ...draft, cover: data.url });
+                    }
                   }}
                   className="block w-full text-sm text-gray-700 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:text-gray-700 hover:file:bg-gray-50"
                 />
