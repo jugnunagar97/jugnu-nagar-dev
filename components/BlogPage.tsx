@@ -91,7 +91,7 @@ const BlogPage: React.FC = () => {
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
 
   return (
-    <section className="py-24 sm:py-32 bg-gray-50">
+    <section className="py-24 sm:py-32 bg-gray-50 font-nunito">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <p className="font-heading text-xs tracking-[0.25em] text-brand-700 uppercase">Articles</p>
