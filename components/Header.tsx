@@ -8,6 +8,10 @@ import { ChevronDownIcon } from './icons/ChevronDownIcon';
 
 const NavLinkItem: React.FC<{ link: NavLink; onClick?: () => void }> = ({ link, onClick }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const isSectionLink = link.href.startsWith('/#');
+  const linkTarget = isSectionLink 
+    ? { pathname: '/', state: { scrollTarget: link.href.slice(2) } }
+    : link.href;
 
   const handleMouseEnter = () => {
     if (window.innerWidth >= 1024) { // lg breakpoint
@@ -28,7 +32,15 @@ const NavLinkItem: React.FC<{ link: NavLink; onClick?: () => void }> = ({ link, 
     }
   };
 
-  const handleLinkClick = () => {
+  const handleLinkClick = (e?: React.MouseEvent) => {
+    if (isSectionLink && window.location.pathname === '/') {
+      e?.preventDefault();
+      const id = link.href.slice(2);
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
     if (onClick) {
       onClick();
     }
@@ -70,9 +82,9 @@ const NavLinkItem: React.FC<{ link: NavLink; onClick?: () => void }> = ({ link, 
 
   return (
     <Link
-      to={link.href}
+      to={linkTarget as any}
       onClick={handleLinkClick}
-      className="font-heading font-medium text-gray-600 hover:text-brand-blue transition-colors duration-300"
+      className="font-heading font-normal text-gray-600 hover:text-brand-blue transition-colors duration-300 tracking-wide"
     >
       {link.label}
     </Link>
@@ -98,29 +110,24 @@ const Header: React.FC = () => {
   }, [location]);
 
   return (
-    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
+    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur border-b border-gray-100 shadow-sm' : 'bg-transparent'}`} aria-label="Primary header">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link to="/" className="font-heading text-2xl font-bold text-gray-800">
-            Andrej Gajdos
-          </Link>
+          {/* Removed logo text for minimal header */}
+          <div className="hidden lg:block flex-1" />
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-8 justify-center">
             {NAV_LINKS.map(link => (
               <NavLinkItem key={link.label} link={link} />
             ))}
           </nav>
           
-          <div className="hidden lg:block">
-            <Link to="/#contact" className="bg-brand-blue text-white px-6 py-2 rounded-md font-bold text-sm hover:bg-brand-blue-dark transition-colors">
-                HIRE ME
-            </Link>
-          </div>
+          <div className="hidden lg:block flex-1" />
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
+            <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu" aria-expanded={isOpen} aria-controls="mobile-menu" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/50 rounded">
               {isOpen ? <XIcon className="w-6 h-6 text-gray-800" /> : <MenuIcon className="w-6 h-6 text-gray-800" />}
             </button>
           </div>
@@ -128,14 +135,11 @@ const Header: React.FC = () => {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`lg:hidden bg-white shadow-lg absolute top-full left-0 w-full transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-screen' : 'max-h-0'}`}>
+      <div id="mobile-menu" className={`lg:hidden bg-white/95 backdrop-blur shadow-lg absolute top-full left-0 w-full transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? 'max-h-screen' : 'max-h-0'}`}>
         <nav className="flex flex-col p-6 space-y-4">
           {NAV_LINKS.map(link => (
             <NavLinkItem key={link.label} link={link} onClick={() => setIsOpen(false)} />
           ))}
-          <Link to="/#contact" onClick={() => setIsOpen(false)} className="bg-brand-blue text-white text-center px-6 py-3 rounded-md font-bold text-sm hover:bg-brand-blue-dark transition-colors mt-4">
-              HIRE ME
-          </Link>
         </nav>
       </div>
     </header>

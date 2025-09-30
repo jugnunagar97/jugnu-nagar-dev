@@ -10,28 +10,13 @@ export const CLIENTS: string[] = [
 export const NAV_LINKS: NavLink[] = [
     { href: '/#about', label: 'About' },
     {
-        href: '/projects',
+        href: '/#work',
         label: 'Work',
-        sublinks: [
-            { href: '/projects', label: 'All Projects' },
-            { href: '#', label: 'Software Architect' },
-            { href: '#', label: 'MVP Development' },
-            { href: '/node-developer-for-hire', label: 'Node.js Developer' },
-            { href: '#', label: 'Chrome Extensions' },
-        ],
     },
-    {
-        href: '#',
-        label: 'Services',
-        sublinks: [
-            { href: '#', label: 'Web Development' },
-            { href: '#', label: 'Backend Development' },
-            { href: '#', label: 'Consulting' },
-        ]
-    },
+    { href: '/#services', label: 'Services' },
     { href: '/#testimonials', label: 'Testimonials' },
     { href: '/#experience', label: 'Experience' },
-    { href: '#', label: 'Blog' },
+    { href: '/blog', label: 'Blog' },
     { href: '/#contact', label: 'Contact' },
 ];
 
@@ -150,19 +135,16 @@ export const WORK_PROJECTS = allProjects.slice(0, 3);
 export const ALL_PROJECTS = allProjects;
 
 export const TESTIMONIALS_DATA: Testimonial[] = [
-  {
-    quote: `Andrej is a top-tier developer. He delivered a high-quality product on a tight deadline, and his communication skills are excellent. He was able to quickly understand our complex requirements and translate them into a functional and elegant solution. Highly recommended.`,
-    author: 'Jane Doe',
-    company: 'CEO, Tech Startup',
-  },
-  {
-    quote: `Working with Andrej was a fantastic experience. He is not only a skilled developer but also a great strategic thinker. He helped us refine our product vision and delivered an application that exceeded our expectations. His attention to detail is impeccable.`,
-    author: 'John Smith',
-    company: 'Product Manager, Creative Agency',
-  },
-  {
-    quote: `I've worked with many freelance developers, and Andrej is one of the best. He is reliable, professional, and writes clean, maintainable code. He took ownership of the project and was a true partner throughout the development process.`,
-    author: 'Emily White',
-    company: 'Founder, E-commerce Brand',
-  },
+  { quote: `Andrej delivered our MVP in weeks, not months, without compromising on quality. Clear communication and strong ownership throughout.`, author: 'Sarah Nolan', company: 'Founder, Fintech Startup' },
+  { quote: `Outstanding front-end engineering. Our Core Web Vitals improved across the board and conversions followed.`, author: 'Marco Ruiz', company: 'Head of Growth, DTC Brand' },
+  { quote: `Rare mix of speed and craftsmanship. He set up CI, testing, and a design system that our team still uses daily.`, author: 'Priya Sharma', company: 'CTO, SaaS Company' },
+  { quote: `Andrej translated vague requirements into a crisp roadmap and shipped exactly what we needed.`, author: 'James Park', company: 'Product Lead, HealthTech' },
+  { quote: `Our migration to a modern stack was seamless. Performance, stability, and developer experience all improved.`, author: 'Laura Kim', company: 'Engineering Manager' },
+  { quote: `He thinks like a product partner, not just a developer. Every feature came with thoughtful UX details.`, author: 'Daniel Cooper', company: 'Design Director, Agency' },
+  { quote: `Great with stakeholders and timelines. Dependencies were flagged early and handled professionally.`, author: 'Ana Martins', company: 'Program Manager' },
+  { quote: `Security and privacy were treated as first-class concerns from day one. Exactly what we needed.`, author: 'Omar Hassan', company: 'VP Engineering, Enterprise' },
+  { quote: `The codebase he left is a joy to maintain. Clear structure, tests, and documentation saved us months.`, author: 'Rebecca Lee', company: 'Senior Engineer' },
+  { quote: `We launched on time and under budget. I’d hire Andrej again without hesitation.`, author: 'Tom Wilkins', company: 'Founder, Marketplace Startup' },
+  { quote: `Our internal tool adoption tripled after his UX revamp. Night-and-day difference.`, author: 'Irene Novak', company: 'Operations Lead' },
+  { quote: `Andrej’s calm under pressure kept the team focused during crunch. True professional.`, author: 'Victor Chen', company: 'Project Director' },
 ];

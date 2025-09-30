@@ -10,7 +10,7 @@ const PlayIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 
 const About: React.FC = () => {
   return (
-    <section id="about" className="py-24 sm:py-32 bg-white">
+    <section id="about" className="py-24 sm:py-32 bg-white font-nunito">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
         <div className="text-center mb-16">
           <h2 className="font-heading text-3xl sm:text-4xl font-semibold tracking-wider text-gray-800">ABOUT ME</h2>
@@ -31,8 +31,8 @@ const About: React.FC = () => {
           </p>
           <div className="flex items-center justify-start pt-4">
             <MailIcon className="w-6 h-6 text-brand-blue mr-3" />
-            <a href="mailto:mail@andrejgajdos.com" className="text-brand-blue font-semibold hover:underline">
-              mail@andrejgajdos.com
+            <a href="mailto:dev.nagarjugnu@gmail.com" className="text-brand-blue font-semibold hover:underline">
+              dev.nagarjugnu@gmail.com
             </a>
           </div>
         </div>

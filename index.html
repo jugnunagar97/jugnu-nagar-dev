@@ -3,22 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Full Stack Developer Portfolio</title>
+    <title>Jugnu Nagar — Full Stack Developer</title>
+    <meta name="description" content="Jugnu Nagar — Full Stack Developer building clean, fast, and scalable web applications. Portfolio, services, work, and contact." />
+    <link rel="canonical" href="https://jugnunagar.dev/" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta property="og:title" content="Jugnu Nagar — Full Stack Developer" />
+    <meta property="og:description" content="Clean, fast, and scalable web apps. View services, projects, and get in touch." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jugnunagar.dev/" />
+    <meta property="og:image" content="/og-image.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              heading: ['Poppins', 'sans-serif'],
+              sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+              heading: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+              nunito: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
             },
             colors: {
-              'brand-blue': '#0052cc',
-              'brand-blue-dark': '#0041a3',
+              'brand-blue': '#2563eb',
+              'brand-blue-dark': '#1e40af',
+              brand: {
+                50: '#eff6ff',
+                100: '#dbeafe',
+                200: '#bfdbfe',
+                300: '#93c5fd',
+                400: '#60a5fa',
+                500: '#3b82f6',
+                600: '#2563eb',
+                700: '#1d4ed8',
+                800: '#1e40af',
+                900: '#1e3a8a',
+              },
+            },
+            boxShadow: {
+              'soft': '0 10px 25px -10px rgba(2, 6, 23, 0.15)',
+            },
+            borderRadius: {
+              'xl': '0.9rem',
             }
           },
         },
@@ -28,7 +56,15 @@
       body {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        letter-spacing: 0.01em;
       }
+      h1, h2, h3, h4 {
+        letter-spacing: -0.01em;
+      }
+      h1 { line-height: 1.1; }
+      h2 { line-height: 1.15; }
+      h3 { line-height: 1.2; }
+      p { line-height: 1.7; }
     </style>
   <script type="importmap">
 {
@@ -42,8 +78,23 @@
 </script>
 </head>
   <body class="font-sans text-gray-700 bg-gray-50">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:bg-white focus:ring-2 focus:ring-brand-blue focus:px-3 focus:py-2 rounded">Skip to content</a>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root" role="application"></div>
     <script type="module" src="/index.tsx"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Jugnu Nagar",
+        "jobTitle": "Full Stack Developer",
+        "email": "mailto:dev.nagarjugnu@gmail.com",
+        "url": "https://jugnunagar.dev/",
+        "sameAs": [
+          "https://x.com/serp_guy",
+          "https://in.linkedin.com/in/jugnu-nagar"
+        ]
+      }
+    </script>
   </body>
 </html>

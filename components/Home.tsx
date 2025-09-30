@@ -1,8 +1,8 @@
 import React from 'react';
 import Hero from './Hero';
-import Clients from './Clients';
 import About from './About';
 import ValueProposition from './ValueProposition';
+import Services from './Services';
 import SkillsAndExperience from './SkillsAndExperience';
 import Work from './Work';
 import Testimonials from './Testimonials';
@@ -12,10 +12,10 @@ const Home: React.FC = () => {
   return (
     <main>
       <Hero />
-      <Clients />
       <About />
       <ValueProposition />
       <SkillsAndExperience />
+      <Services />
       <Work />
       <Testimonials />
       <Contact />

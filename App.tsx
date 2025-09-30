@@ -1,19 +1,36 @@
 import React, { useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigationType, useLocation as useRRLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
-import ProjectsPage from './components/ProjectsPage';
-import NodeDeveloperPage from './components/NodeDeveloperPage';
+import BlogPage from './components/BlogPage';
+import AdminPage from './components/AdminPage';
+import NotFoundPage from './components/NotFoundPage';
+// Removed dropdown pages
 
-const ScrollToTop = () => {
-  const { pathname, hash } = useLocation();
+const ScrollManager: React.FC = () => {
+  const location = useLocation() as any;
 
   useEffect(() => {
-    if (!hash) {
-      window.scrollTo(0, 0);
+    const targetId: string | undefined = location.state?.scrollTarget;
+    if (targetId) {
+      // Delay to ensure home is rendered
+      setTimeout(() => {
+        const el = document.getElementById(targetId.replace('#', ''));
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        // Clear state by replacing history entry
+        window.history.replaceState({}, '', window.location.pathname);
+      }, 0);
+      return;
     }
-  }, [pathname, hash]);
+
+    // Default behavior: scroll to top on path change
+    window.scrollTo(0, 0);
+  }, [location]);
 
   return null;
 };
@@ -22,13 +39,16 @@ const ScrollToTop = () => {
 const App: React.FC = () => {
   return (
     <Router>
-      <ScrollToTop />
+      <ScrollManager />
       <Header />
       <main className="pt-20"> {/* Fix: Added padding-top to prevent content from being hidden by the fixed header */}
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/node-developer-for-hire" element={<NodeDeveloperPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/__dashboard__admin__/panel" element={<AdminPage />} />
+          {/* Fallback alias for mistyped admin path */}
+          <Route path="/dashboardadmin_/panel" element={<AdminPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer />

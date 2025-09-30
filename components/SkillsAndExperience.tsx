@@ -150,12 +150,10 @@ const SkillsAndExperience: React.FC = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-center items-center border-b border-gray-200 mb-12 sm:mb-16">
           <TabButton active={activeTab === 'SKILLS'} onClick={() => setActiveTab('SKILLS')}>SKILLS</TabButton>
-          <TabButton active={activeTab === 'EXPERIENCE'} onClick={() => setActiveTab('EXPERIENCE')}>EXPERIENCE</TabButton>
           <TabButton active={activeTab === 'CODE SAMPLES'} onClick={() => setActiveTab('CODE SAMPLES')}>CODE SAMPLES</TabButton>
         </div>
         <div className="max-w-7xl mx-auto">
           {activeTab === 'SKILLS' && <SkillsSection />}
-          {activeTab === 'EXPERIENCE' && <ExperienceSection />}
           {activeTab === 'CODE SAMPLES' && <CodeSamplesSection />}
         </div>
       </div>
