@@ -45,9 +45,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<BlogPage />} />
-          <Route path="/__dashboard__admin__/panel" element={<AdminPage />} />
-          {/* Fallback alias for mistyped admin path */}
-          <Route path="/dashboardadmin_/panel" element={<AdminPage />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
