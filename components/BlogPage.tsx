@@ -79,7 +79,11 @@ const BlogPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const pageSize = 6;
 
-  const posts = useMemo(() => getStored(), []);
+  const posts = useMemo(() => {
+    const stored = getStored();
+    console.log('Blog posts loaded:', stored);
+    return stored;
+  }, []);
   const allTags = useMemo(() => Array.from(new Set(posts.flatMap(p => p.tags))), [posts]);
 
   const filtered = posts.filter(p =>

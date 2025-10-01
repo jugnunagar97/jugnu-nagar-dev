@@ -95,7 +95,10 @@ const AdminPage: React.FC = () => {
   const editPost = (p: StoredPost) => setDraft({ ...p });
   const removePost = (id: string) => setPosts(ps => ps.filter(p => p.id !== id));
   const saveDraft = () => { if (!draft) return; setPosts(ps => { const i = ps.findIndex(p=>p.id===draft.id); if (i>=0) { const copy=[...ps]; copy[i]=draft; return copy; } return [draft, ...ps]; }); setDraft(null); };
-  const publish = (id: string, published: boolean) => setPosts(ps => ps.map(p => p.id===id? { ...p, published }: p));
+  const publish = (id: string, published: boolean) => {
+    console.log(`Publishing post ${id} as ${published ? 'published' : 'draft'}`);
+    setPosts(ps => ps.map(p => p.id===id? { ...p, published }: p));
+  };
 
   return (
     <section className="py-24 sm:py-32 bg-gray-50">
@@ -159,7 +162,7 @@ const AdminPage: React.FC = () => {
                 </div>
                 <div className="flex gap-2">
                   <button onClick={()=>editPost(p)} className="px-3 py-1.5 rounded-md border text-sm">Edit</button>
-                  <button onClick={()=>publish(p.id, !p.published)} className="px-3 py-1.5 rounded-md text-sm ${p.published ? 'bg-yellow-100' : 'bg-green-600 text-white'}">{p.published ? 'Unpublish' : 'Publish'}</button>
+                  <button onClick={()=>publish(p.id, !p.published)} className={`px-3 py-1.5 rounded-md text-sm ${p.published ? 'bg-yellow-100 text-yellow-800' : 'bg-green-600 text-white'}`}>{p.published ? 'Unpublish' : 'Publish'}</button>
                   <button onClick={()=>removePost(p.id)} className="px-3 py-1.5 rounded-md border text-sm">Delete</button>
                 </div>
               </div>
