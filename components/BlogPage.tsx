@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 type Post = {
   id: string;
@@ -11,25 +11,23 @@ type Post = {
   slug?: string;
 };
 
-function getStored(): Post[] {
+async function fetchPosts(): Promise<Post[]> {
   try {
-    const raw = localStorage.getItem('jn_blog_posts_v1');
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as any[];
-    const toSlug = (s: string) => s?.toLowerCase()?.replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-');
-    return parsed
-      .filter(p => p.published)
-      .map(p => ({
-        id: p.id,
-        title: p.title,
-        excerpt: p.excerpt,
-        cover: p.cover || 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1400&auto=format&fit=crop',
-        date: p.date,
-        tags: p.tags || [],
-        readMinutes: p.readMinutes || 5,
-        slug: p.slug || toSlug(p.title || String(p.id)),
-      }));
-  } catch { return []; }
+    const response = await fetch('/api/posts');
+    if (!response.ok) {
+      console.error('Failed to fetch posts:', response.statusText);
+      return [];
+    }
+    const data = await response.json();
+    if (!data.ok) {
+      console.error('API error:', data.error);
+      return [];
+    }
+    return data.posts || [];
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
 }
 
 const TagChip: React.FC<{ active?: boolean; onClick?: () => void }> = ({ active, onClick, children }) => (
@@ -77,12 +75,19 @@ const BlogPage: React.FC = () => {
   const [query, setQuery] = useState('');
   const [activeTag, setActiveTag] = useState<string>('All');
   const [page, setPage] = useState(1);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
   const pageSize = 6;
 
-  const posts = useMemo(() => {
-    const stored = getStored();
-    console.log('Blog posts loaded:', stored);
-    return stored;
+  useEffect(() => {
+    const loadPosts = async () => {
+      setLoading(true);
+      const fetchedPosts = await fetchPosts();
+      console.log('Blog posts loaded:', fetchedPosts);
+      setPosts(fetchedPosts);
+      setLoading(false);
+    };
+    loadPosts();
   }, []);
   const allTags = useMemo(() => Array.from(new Set(posts.flatMap(p => p.tags))), [posts]);
 
@@ -117,7 +122,11 @@ const BlogPage: React.FC = () => {
           </div>
         </div>
 
-        {paginated.length > 0 ? (
+        {loading ? (
+          <div className="mt-12 text-center text-gray-500">
+            <p>Loading articles...</p>
+          </div>
+        ) : paginated.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {paginated.map(p => <BlogCard key={p.id} post={p} />)}
           </div>

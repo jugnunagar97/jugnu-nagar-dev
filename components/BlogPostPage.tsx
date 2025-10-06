@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import profileImg from './jugnu-nagar.jpg';
 import { useParams, Link } from 'react-router-dom';
 
@@ -15,29 +15,59 @@ type StoredPost = {
   published?: boolean;
 };
 
-function loadPostBySlug(slug: string | undefined): StoredPost | null {
+async function fetchPostBySlug(slug: string | undefined): Promise<StoredPost | null> {
   if (!slug) return null;
   try {
-    const raw = localStorage.getItem('jn_blog_posts_v1');
-    if (!raw) return null;
-    const posts: StoredPost[] = JSON.parse(raw);
-    const found = posts.find(p => p.slug === slug || p.id === slug);
-    return found || null;
-  } catch {
+    const response = await fetch(`/api/posts/${slug}`);
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      console.error('Failed to fetch post:', response.statusText);
+      return null;
+    }
+    const data = await response.json();
+    if (!data.ok) {
+      console.error('API error:', data.error);
+      return null;
+    }
+    return data.post || null;
+  } catch (error) {
+    console.error('Error fetching post:', error);
     return null;
   }
 }
 
 const BlogPostPage: React.FC = () => {
   const { slug } = useParams();
-  const post = loadPostBySlug(slug);
+  const [post, setPost] = useState<StoredPost | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadPost = async () => {
+      setLoading(true);
+      const fetchedPost = await fetchPostBySlug(slug);
+      setPost(fetchedPost);
+      setLoading(false);
+    };
+    loadPost();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <section className="py-24 sm:py-32 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
+          <h1 className="font-heading text-3xl sm:text-4xl font-semibold text-gray-900">Loading...</h1>
+          <p className="mt-3 text-gray-600">Please wait while we fetch the article.</p>
+        </div>
+      </section>
+    );
+  }
 
   if (!post) {
     return (
       <section className="py-24 sm:py-32 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
           <h1 className="font-heading text-3xl sm:text-4xl font-semibold text-gray-900">Post not found</h1>
-          <p className="mt-3 text-gray-600">The article you’re looking for doesn’t exist.</p>
+          <p className="mt-3 text-gray-600">The article you're looking for doesn't exist.</p>
           <Link to="/blog" className="inline-block mt-8 bg-brand-blue text-white px-6 py-3 rounded-md font-semibold">Back to Blog</Link>
         </div>
       </section>

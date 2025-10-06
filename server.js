@@ -3,10 +3,45 @@ import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
 import { put } from '@vercel/blob';
+import fs from 'fs';
+import path from 'path';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Blog posts storage
+const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
+
+// Ensure data directory exists
+const dataDir = path.dirname(BLOG_POSTS_FILE);
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+// Helper functions for blog posts
+function loadBlogPosts() {
+  try {
+    if (!fs.existsSync(BLOG_POSTS_FILE)) {
+      return [];
+    }
+    const data = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error loading blog posts:', error);
+    return [];
+  }
+}
+
+function saveBlogPosts(posts) {
+  try {
+    fs.writeFileSync(BLOG_POSTS_FILE, JSON.stringify(posts, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Error saving blog posts:', error);
+    return false;
+  }
+}
 
 // Load env
 const PORT = process.env.PORT || 5174;
@@ -119,6 +154,91 @@ app.post('/api/upload', async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ ok: false, error: 'Upload failed' });
+  }
+});
+
+// Blog posts API endpoints
+app.get('/api/posts', (req, res) => {
+  try {
+    const posts = loadBlogPosts();
+    // Only return published posts for public API
+    const publishedPosts = posts.filter(post => post.published);
+    res.json({ ok: true, posts: publishedPosts });
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    res.status(500).json({ ok: false, error: 'Failed to fetch posts' });
+  }
+});
+
+app.get('/api/posts/:slug', (req, res) => {
+  try {
+    const { slug } = req.params;
+    const posts = loadBlogPosts();
+    const post = posts.find(p => p.slug === slug || p.id === slug);
+    
+    if (!post || !post.published) {
+      return res.status(404).json({ ok: false, error: 'Post not found' });
+    }
+    
+    res.json({ ok: true, post });
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    res.status(500).json({ ok: false, error: 'Failed to fetch post' });
+  }
+});
+
+// Admin endpoints (require authentication in production)
+app.get('/api/admin/posts', (req, res) => {
+  try {
+    const posts = loadBlogPosts();
+    res.json({ ok: true, posts });
+  } catch (error) {
+    console.error('Error fetching admin posts:', error);
+    res.status(500).json({ ok: false, error: 'Failed to fetch posts' });
+  }
+});
+
+app.post('/api/admin/posts', (req, res) => {
+  try {
+    const newPost = req.body;
+    if (!newPost.id || !newPost.title) {
+      return res.status(400).json({ ok: false, error: 'Missing required fields' });
+    }
+    
+    const posts = loadBlogPosts();
+    const existingIndex = posts.findIndex(p => p.id === newPost.id);
+    
+    if (existingIndex >= 0) {
+      posts[existingIndex] = newPost;
+    } else {
+      posts.unshift(newPost);
+    }
+    
+    if (saveBlogPosts(posts)) {
+      res.json({ ok: true, post: newPost });
+    } else {
+      res.status(500).json({ ok: false, error: 'Failed to save post' });
+    }
+  } catch (error) {
+    console.error('Error saving post:', error);
+    res.status(500).json({ ok: false, error: 'Failed to save post' });
+  }
+});
+
+app.delete('/api/admin/posts/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const posts = loadBlogPosts();
+    const filteredPosts = posts.filter(p => p.id !== id);
+    
+    if (saveBlogPosts(filteredPosts)) {
+      res.json({ ok: true });
+    } else {
+      res.status(500).json({ ok: false, error: 'Failed to delete post' });
+    }
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    res.status(500).json({ ok: false, error: 'Failed to delete post' });
   }
 });
 

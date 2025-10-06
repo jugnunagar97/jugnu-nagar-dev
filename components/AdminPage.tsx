@@ -16,10 +16,60 @@ type StoredPost = {
 const STORAGE_KEY = 'jn_blog_posts_v1';
 const ADMIN_TOKEN_KEY = 'jn_admin_token_v1';
 
-function loadPosts(): StoredPost[] {
-  try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; }
+async function fetchPosts(): Promise<StoredPost[]> {
+  try {
+    const response = await fetch('/api/admin/posts');
+    if (!response.ok) {
+      console.error('Failed to fetch posts:', response.statusText);
+      return [];
+    }
+    const data = await response.json();
+    if (!data.ok) {
+      console.error('API error:', data.error);
+      return [];
+    }
+    return data.posts || [];
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
 }
-function savePosts(posts: StoredPost[]) { localStorage.setItem(STORAGE_KEY, JSON.stringify(posts)); }
+
+async function savePost(post: StoredPost): Promise<boolean> {
+  try {
+    const response = await fetch('/api/admin/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(post)
+    });
+    if (!response.ok) {
+      console.error('Failed to save post:', response.statusText);
+      return false;
+    }
+    const data = await response.json();
+    return data.ok;
+  } catch (error) {
+    console.error('Error saving post:', error);
+    return false;
+  }
+}
+
+async function deletePost(id: string): Promise<boolean> {
+  try {
+    const response = await fetch(`/api/admin/posts/${id}`, {
+      method: 'DELETE'
+    });
+    if (!response.ok) {
+      console.error('Failed to delete post:', response.statusText);
+      return false;
+    }
+    const data = await response.json();
+    return data.ok;
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    return false;
+  }
+}
 
 const LoginGate: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => {
   const [secret, setSecret] = useState('');
@@ -82,22 +132,62 @@ const RichTextEditor: React.FC<{ value: string; onChange: (html: string)=>void }
 
 const AdminPage: React.FC = () => {
   const [authed, setAuthed] = useState<boolean>(false);
-  const [posts, setPosts] = useState<StoredPost[]>(loadPosts());
+  const [posts, setPosts] = useState<StoredPost[]>([]);
   const [draft, setDraft] = useState<StoredPost | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => { setAuthed(sessionStorage.getItem(ADMIN_TOKEN_KEY) === 'ok'); }, []);
-  useEffect(() => { savePosts(posts); }, [posts]);
+  
+  useEffect(() => {
+    const loadPosts = async () => {
+      if (authed) {
+        setLoading(true);
+        const fetchedPosts = await fetchPosts();
+        setPosts(fetchedPosts);
+        setLoading(false);
+      }
+    };
+    loadPosts();
+  }, [authed]);
 
   if (!authed) return <LoginGate onUnlock={()=>setAuthed(true)} />;
 
   const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-');
   const startNew = () => setDraft({ id: crypto.randomUUID(), title: '', slug: '', tags: [], cover: '', excerpt: '', contentHtml: '', date: new Date().toISOString(), readMinutes: 5, published: false });
   const editPost = (p: StoredPost) => setDraft({ ...p });
-  const removePost = (id: string) => setPosts(ps => ps.filter(p => p.id !== id));
-  const saveDraft = () => { if (!draft) return; setPosts(ps => { const i = ps.findIndex(p=>p.id===draft.id); if (i>=0) { const copy=[...ps]; copy[i]=draft; return copy; } return [draft, ...ps]; }); setDraft(null); };
-  const publish = (id: string, published: boolean) => {
+  
+  const removePost = async (id: string) => {
+    const success = await deletePost(id);
+    if (success) {
+      setPosts(ps => ps.filter(p => p.id !== id));
+    } else {
+      alert('Failed to delete post. Please try again.');
+    }
+  };
+  
+  const saveDraft = async () => {
+    if (!draft) return;
+    const success = await savePost(draft);
+    if (success) {
+      setPosts(ps => { const i = ps.findIndex(p=>p.id===draft.id); if (i>=0) { const copy=[...ps]; copy[i]=draft; return copy; } return [draft, ...ps]; });
+      setDraft(null);
+    } else {
+      alert('Failed to save post. Please try again.');
+    }
+  };
+  
+  const publish = async (id: string, published: boolean) => {
     console.log(`Publishing post ${id} as ${published ? 'published' : 'draft'}`);
-    setPosts(ps => ps.map(p => p.id===id? { ...p, published }: p));
+    const post = posts.find(p => p.id === id);
+    if (post) {
+      const updatedPost = { ...post, published };
+      const success = await savePost(updatedPost);
+      if (success) {
+        setPosts(ps => ps.map(p => p.id===id? updatedPost: p));
+      } else {
+        alert('Failed to update post status. Please try again.');
+      }
+    }
   };
 
   return (
@@ -152,8 +242,13 @@ const AdminPage: React.FC = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {posts.map(p => (
+        {loading ? (
+          <div className="text-center text-gray-500">
+            <p>Loading posts...</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {posts.map(p => (
             <div key={p.id} className="bg-white ring-1 ring-gray-100 rounded-xl shadow-soft p-5">
               <div className="flex items-start justify-between">
                 <div>
@@ -169,7 +264,8 @@ const AdminPage: React.FC = () => {
               <p className="mt-2 text-gray-600 text-sm">{p.excerpt}</p>
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
