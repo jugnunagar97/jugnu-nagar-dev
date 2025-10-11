@@ -18,18 +18,36 @@ type StoredPost = {
 async function fetchPostBySlug(slug: string | undefined): Promise<StoredPost | null> {
   if (!slug) return null;
   try {
-    const response = await fetch(`/api/posts/${slug}`);
+    console.log('Fetching post with slug:', slug);
+    
+    // Fetch ALL posts from admin API (which we know works)
+    const response = await fetch('/api/admin/posts');
+    
     if (!response.ok) {
-      if (response.status === 404) return null;
-      console.error('Failed to fetch post:', response.statusText);
+      console.error('Failed to fetch posts:', response.statusText);
       return null;
     }
+    
     const data = await response.json();
+    console.log('API response:', data);
+    
     if (!data.ok) {
       console.error('API error:', data.error);
       return null;
     }
-    return data.post || null;
+    
+    // Find the post by slug on the client side
+    const posts = data.posts || [];
+    console.log('All posts:', posts.map((p: StoredPost) => ({ id: p.id, slug: p.slug, published: p.published })));
+    
+    const post = posts.find((p: StoredPost) => {
+      const matches = (p.slug === slug || p.id === slug);
+      console.log(`Checking post: slug="${p.slug}", id="${p.id}", matches=${matches}, published=${p.published}`);
+      return matches && p.published === true;
+    });
+    
+    console.log('Found post:', post ? post.title : 'not found');
+    return post || null;
   } catch (error) {
     console.error('Error fetching post:', error);
     return null;
@@ -67,8 +85,8 @@ const BlogPostPage: React.FC = () => {
       <section className="py-24 sm:py-32 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
           <h1 className="font-heading text-3xl sm:text-4xl font-semibold text-gray-900">Post not found</h1>
-          <p className="mt-3 text-gray-600">The article you're looking for doesn't exist.</p>
-          <Link to="/blog" className="inline-block mt-8 bg-brand-blue text-white px-6 py-3 rounded-md font-semibold">Back to Blog</Link>
+          <p className="mt-3 text-gray-600">The article you're looking for doesn't exist or isn't published yet.</p>
+          <Link to="/blog" className="inline-block mt-8 bg-brand-blue text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700">Back to Blog</Link>
         </div>
       </section>
     );
@@ -88,16 +106,15 @@ const BlogPostPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <span>{new Date(post.date).toLocaleDateString()}</span>
               {post.readMinutes ? (<><span className="w-1 h-1 rounded-full bg-gray-300" /><span>{post.readMinutes} min read</span></>) : null}
-              {post.published === false && (
-                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Draft</span>
-              )}
             </div>
           </div>
         </div>
         {post.cover && (
-          <img src={post.cover} alt="" loading="lazy" className="mt-6 rounded-xl ring-1 ring-gray-100 w-full object-cover" />
+          <img src={post.cover} alt={post.title} loading="lazy" className="mt-6 rounded-xl ring-1 ring-gray-100 w-full object-cover" />
         )}
-        <p className="mt-6 text-lg text-gray-700 leading-relaxed">{post.excerpt}</p>
+        {post.excerpt && (
+          <p className="mt-6 text-lg text-gray-700 leading-relaxed">{post.excerpt}</p>
+        )}
         <div className="prose prose-lg max-w-none mt-8 leading-relaxed" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
       </div>
     </article>
@@ -105,5 +122,3 @@ const BlogPostPage: React.FC = () => {
 };
 
 export default BlogPostPage;
-
-
