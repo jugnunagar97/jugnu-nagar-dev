@@ -1,21 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-
-const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
-
-// Helper functions for blog posts
-function loadBlogPosts() {
-  try {
-    if (!fs.existsSync(BLOG_POSTS_FILE)) {
-      return [];
-    }
-    const data = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error loading blog posts:', error);
-    return [];
-  }
-}
+import { loadBlogPosts } from '../lib/storage.js';
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -31,7 +14,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const { slug } = req.query;
-      const posts = loadBlogPosts();
+      const posts = await loadBlogPosts();
       const post = posts.find(p => p.slug === slug || p.id === slug);
       
       if (!post || !post.published) {

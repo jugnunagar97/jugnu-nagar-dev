@@ -1,37 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-
-const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
-
-// Ensure data directory exists
-const dataDir = path.dirname(BLOG_POSTS_FILE);
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
-// Helper functions for blog posts
-function loadBlogPosts() {
-  try {
-    if (!fs.existsSync(BLOG_POSTS_FILE)) {
-      return [];
-    }
-    const data = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error loading blog posts:', error);
-    return [];
-  }
-}
-
-function saveBlogPosts(posts) {
-  try {
-    fs.writeFileSync(BLOG_POSTS_FILE, JSON.stringify(posts, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Error saving blog posts:', error);
-    return false;
-  }
-}
+import { loadBlogPosts, deleteBlogPost } from '../lib/storage.js';
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -47,10 +14,12 @@ export default async function handler(req, res) {
   if (req.method === 'DELETE') {
     try {
       const { id } = req.query;
-      const posts = loadBlogPosts();
-      const filteredPosts = posts.filter(p => p.id !== id);
+      console.log('Deleting post with id:', id);
       
-      if (saveBlogPosts(filteredPosts)) {
+      const success = await deleteBlogPost(id);
+      console.log('Delete result:', success);
+      
+      if (success) {
         res.json({ ok: true });
       } else {
         res.status(500).json({ ok: false, error: 'Failed to delete post' });

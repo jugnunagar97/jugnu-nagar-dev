@@ -1,55 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-
-const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
-
-// Ensure data directory exists
-const dataDir = path.dirname(BLOG_POSTS_FILE);
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
-// Helper functions for blog posts
-function loadBlogPosts() {
-  try {
-    if (!fs.existsSync(BLOG_POSTS_FILE)) {
-      return [];
-    }
-    const data = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error loading blog posts:', error);
-    return [];
-  }
-}
-
-function saveBlogPosts(posts) {
-  try {
-    console.log('Saving to file:', BLOG_POSTS_FILE);
-    console.log('Posts to save:', posts);
-    
-    // Ensure data directory exists
-    const dataDir = path.dirname(BLOG_POSTS_FILE);
-    if (!fs.existsSync(dataDir)) {
-      console.log('Creating data directory:', dataDir);
-      fs.mkdirSync(dataDir, { recursive: true });
-    }
-    
-    // Write the file
-    fs.writeFileSync(BLOG_POSTS_FILE, JSON.stringify(posts, null, 2));
-    console.log('Successfully saved blog posts');
-    
-    // Verify the file was written
-    const savedData = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
-    console.log('Verified saved data:', savedData);
-    
-    return true;
-  } catch (error) {
-    console.error('Error saving blog posts:', error);
-    console.error('Error details:', error.message, error.stack);
-    return false;
-  }
-}
+import { loadBlogPosts, addBlogPost } from './lib/storage.js';
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -64,7 +13,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     try {
-      const posts = loadBlogPosts();
+      const posts = await loadBlogPosts();
       res.json({ ok: true, posts });
     } catch (error) {
       console.error('Error fetching admin posts:', error);
@@ -77,22 +26,14 @@ export default async function handler(req, res) {
         return res.status(400).json({ ok: false, error: 'Missing required fields' });
       }
       
-      const posts = loadBlogPosts();
-      const existingIndex = posts.findIndex(p => p.id === newPost.id);
+      console.log('Adding blog post:', newPost);
+      const success = await addBlogPost(newPost);
+      console.log('Add result:', success);
       
-      if (existingIndex >= 0) {
-        posts[existingIndex] = newPost;
-      } else {
-        posts.unshift(newPost);
-      }
-      
-      console.log('Attempting to save posts:', posts);
-      const saveResult = saveBlogPosts(posts);
-      console.log('Save result:', saveResult);
-      if (saveResult) {
+      if (success) {
         res.json({ ok: true, post: newPost });
       } else {
-        console.error('Failed to save blog posts');
+        console.error('Failed to add blog post');
         res.status(500).json({ ok: false, error: 'Failed to save post' });
       }
     } catch (error) {
