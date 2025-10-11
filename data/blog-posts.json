@@ -1,0 +1,12 @@
+[
+  {
+    "id": "test-123",
+    "title": "Test Post",
+    "metaDescription": "Test meta description",
+    "contentHtml": "<p>Test content</p>",
+    "date": "2025-01-01T00:00:00.000Z",
+    "published": true,
+    "tags": [],
+    "cover": ""
+  }
+]
