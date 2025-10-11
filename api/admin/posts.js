@@ -27,11 +27,26 @@ function saveBlogPosts(posts) {
   try {
     console.log('Saving to file:', BLOG_POSTS_FILE);
     console.log('Posts to save:', posts);
+    
+    // Ensure data directory exists
+    const dataDir = path.dirname(BLOG_POSTS_FILE);
+    if (!fs.existsSync(dataDir)) {
+      console.log('Creating data directory:', dataDir);
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    // Write the file
     fs.writeFileSync(BLOG_POSTS_FILE, JSON.stringify(posts, null, 2));
     console.log('Successfully saved blog posts');
+    
+    // Verify the file was written
+    const savedData = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
+    console.log('Verified saved data:', savedData);
+    
     return true;
   } catch (error) {
     console.error('Error saving blog posts:', error);
+    console.error('Error details:', error.message, error.stack);
     return false;
   }
 }
@@ -82,7 +97,8 @@ export default async function handler(req, res) {
       }
     } catch (error) {
       console.error('Error saving post:', error);
-      res.status(500).json({ ok: false, error: 'Failed to save post' });
+      console.error('Error details:', error.message, error.stack);
+      res.status(500).json({ ok: false, error: 'Failed to save post', details: error.message });
     }
   } else {
     res.status(405).json({ ok: false, error: 'Method not allowed' });
