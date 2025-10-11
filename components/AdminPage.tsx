@@ -36,16 +36,20 @@ async function fetchPosts(): Promise<StoredPost[]> {
 
 async function savePost(post: StoredPost): Promise<boolean> {
   try {
+    console.log('Saving post:', post);
     const response = await fetch('/api/admin/posts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(post)
     });
+    console.log('Response status:', response.status);
     if (!response.ok) {
-      console.error('Failed to save post:', response.statusText);
+      const errorText = await response.text();
+      console.error('Failed to save post:', response.statusText, errorText);
       return false;
     }
     const data = await response.json();
+    console.log('Response data:', data);
     return data.ok;
   } catch (error) {
     console.error('Error saving post:', error);
@@ -191,8 +195,11 @@ const AdminPage: React.FC = () => {
 
   const publishDraft = async () => {
     if (!draft) return;
+    console.log('Publishing draft:', draft);
     const publishedDraft = { ...draft, published: true };
+    console.log('Published draft:', publishedDraft);
     const success = await savePost(publishedDraft);
+    console.log('Save result:', success);
     if (success) {
       setPosts(ps => { 
         const i = ps.findIndex(p=>p.id===draft.id); 
