@@ -25,7 +25,10 @@ function loadBlogPosts() {
 
 function saveBlogPosts(posts) {
   try {
+    console.log('Saving to file:', BLOG_POSTS_FILE);
+    console.log('Posts to save:', posts);
     fs.writeFileSync(BLOG_POSTS_FILE, JSON.stringify(posts, null, 2));
+    console.log('Successfully saved blog posts');
     return true;
   } catch (error) {
     console.error('Error saving blog posts:', error);
@@ -68,9 +71,13 @@ export default async function handler(req, res) {
         posts.unshift(newPost);
       }
       
-      if (saveBlogPosts(posts)) {
+      console.log('Attempting to save posts:', posts);
+      const saveResult = saveBlogPosts(posts);
+      console.log('Save result:', saveResult);
+      if (saveResult) {
         res.json({ ok: true, post: newPost });
       } else {
+        console.error('Failed to save blog posts');
         res.status(500).json({ ok: false, error: 'Failed to save post' });
       }
     } catch (error) {
