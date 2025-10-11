@@ -3,22 +3,29 @@ import { list } from '@vercel/blob';
 // Load blog posts from Vercel Blob storage
 async function loadBlogPosts() {
   try {
-    // List all blobs to find our blog posts file
-    const { blobs } = await list();
-    const blogFile = blobs.find(b => b.pathname === 'blog-posts.json');
+    console.log('Attempting to load blog posts from Blob storage...');
+    
+    const { blobs } = await list({
+      prefix: 'blog-posts',
+    });
+    
+    console.log('All blobs:', blobs.map(b => b.pathname));
+    
+    // Find any blog posts file (with or without random suffix)
+    const blogFile = blobs.find(b => b.pathname.startsWith('blog-posts'));
     
     if (blogFile) {
-      // Fetch and parse the JSON file
+      console.log('Found blog posts file:', blogFile.pathname, 'at:', blogFile.url);
       const response = await fetch(blogFile.url);
       const posts = await response.json();
-      console.log('Loaded blog posts from Blob:', posts.length);
+      console.log('Loaded blog posts:', posts.length, 'posts');
       return posts;
     } else {
-      console.log('No blog posts file found in Blob storage');
+      console.log('No blog-posts file found in Blob storage');
       return [];
     }
   } catch (error) {
-    console.error('Error loading blog posts:', error);
+    console.error('Error loading blog posts from Blob:', error);
     return [];
   }
 }
@@ -37,12 +44,16 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const posts = await loadBlogPosts();
+      console.log('Total posts loaded:', posts.length);
+      
       // Only return published posts for public API
-      const publishedPosts = posts.filter(post => post.published);
+      const publishedPosts = posts.filter(post => post.published === true);
+      console.log('Published posts:', publishedPosts.length);
+      
       res.json({ ok: true, posts: publishedPosts });
     } catch (error) {
       console.error('Error fetching posts:', error);
-      res.status(500).json({ ok: false, error: 'Failed to fetch posts' });
+      res.status(500).json({ ok: false, error: 'Failed to fetch posts', details: error.message });
     }
   } else {
     res.status(405).json({ ok: false, error: 'Method not allowed' });
