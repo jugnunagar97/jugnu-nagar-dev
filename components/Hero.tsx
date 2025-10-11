@@ -32,15 +32,52 @@ const Hero: React.FC = () => {
             </div>
           </div>
           <div className="flex justify-center lg:justify-end">
-             <div className="relative">
-                <div className="absolute -inset-2 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-full opacity-60 blur-2xl"></div>
-                <img 
-                  src={profileImg} 
-                  alt="Jugnu Nagar"
-                  loading="lazy"
-                  width="384" height="384"
-                  className="relative rounded-full w-80 h-80 md:w-96 md:h-96 object-cover shadow-2xl"
-                />
+            <div className="relative">
+              {/* Outer glow effect */}
+              <div className="absolute -inset-2 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-full opacity-60 blur-2xl"></div>
+              
+              {/* Animated orbiting lines container */}
+              <div className="relative w-80 h-80 md:w-96 md:h-96">
+                {/* Outer orbit ring */}
+                <div className="absolute inset-0 rounded-full border border-blue-200/30 animate-spin-slow">
+                  <div className="absolute top-0 left-1/2 w-1 h-1 bg-blue-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute bottom-0 left-1/2 w-1 h-1 bg-blue-400 rounded-full transform -translate-x-1/2 translate-y-1/2"></div>
+                </div>
+                
+                {/* Middle orbit ring */}
+                <div className="absolute inset-4 rounded-full border border-indigo-200/40 animate-spin-reverse">
+                  <div className="absolute top-0 left-1/2 w-1.5 h-1.5 bg-indigo-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute right-0 top-1/2 w-1.5 h-1.5 bg-indigo-400 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
+                </div>
+                
+                {/* Inner orbit ring */}
+                <div className="absolute inset-8 rounded-full border border-purple-200/50 animate-spin-slow">
+                  <div className="absolute top-0 left-1/2 w-1 h-1 bg-purple-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute bottom-0 right-0 w-1 h-1 bg-purple-400 rounded-full transform translate-x-1/2 translate-y-1/2"></div>
+                </div>
+                
+                {/* Floating particles */}
+                <div className="absolute inset-0">
+                  <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-blue-300 rounded-full animate-pulse-slow"></div>
+                  <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-indigo-300 rounded-full animate-pulse-slow delay-1000"></div>
+                  <div className="absolute top-1/2 left-1/6 w-0.5 h-0.5 bg-purple-300 rounded-full animate-pulse-slow delay-2000"></div>
+                  <div className="absolute bottom-1/4 right-1/6 w-0.5 h-0.5 bg-blue-300 rounded-full animate-pulse-slow delay-3000"></div>
+                </div>
+                
+                {/* Central photo */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <img 
+                    src={profileImg} 
+                    alt="Jugnu Nagar"
+                    loading="lazy"
+                    width="384" height="384"
+                    className="rounded-full w-72 h-72 md:w-80 md:h-80 object-cover shadow-2xl relative z-10"
+                  />
+                </div>
+                
+                {/* Subtle inner glow */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-50/20 to-indigo-50/20 blur-sm"></div>
+              </div>
             </div>
           </div>
         </div>
