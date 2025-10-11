@@ -6,13 +6,12 @@ type StoredPost = {
   slug?: string;
   tags: string[];
   cover?: string;
-  metaDescription: string;
   contentHtml: string;
   date: string;
   published: boolean;
+  readMinutes?: number;
 };
 
-const STORAGE_KEY = 'jn_blog_posts_v1';
 const ADMIN_TOKEN_KEY = 'jn_admin_token_v1';
 
 async function fetchPosts(): Promise<StoredPost[]> {
@@ -79,7 +78,6 @@ const LoginGate: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Very simple local gate; choose a strong secret below
     const expected = (import.meta as any).env?.VITE_ADMIN_SECRET || 'change-this-secret';
     if (secret === expected) {
       sessionStorage.setItem(ADMIN_TOKEN_KEY, 'ok');
@@ -156,7 +154,28 @@ const AdminPage: React.FC = () => {
   if (!authed) return <LoginGate onUnlock={()=>setAuthed(true)} />;
 
   const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-');
-  const startNew = () => setDraft({ id: crypto.randomUUID(), title: '', slug: '', tags: [], cover: '', metaDescription: '', contentHtml: '', date: new Date().toISOString(), published: false });
+  
+  // Auto-calculate read time from content
+  const calculateReadMinutes = (html: string): number => {
+    const tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    const text = tmp.textContent || tmp.innerText || '';
+    const words = text.trim().split(/\s+/).length;
+    return Math.max(1, Math.ceil(words / 200)); // Average reading speed: 200 words/min
+  };
+  
+  const startNew = () => setDraft({ 
+    id: crypto.randomUUID(), 
+    title: '', 
+    slug: '', 
+    tags: [], 
+    cover: '', 
+    contentHtml: '', 
+    date: new Date().toISOString(), 
+    published: false,
+    readMinutes: 1
+  });
+  
   const editPost = (p: StoredPost) => setDraft({ ...p });
   
   const removePost = async (id: string) => {
@@ -170,9 +189,22 @@ const AdminPage: React.FC = () => {
   
   const saveDraft = async () => {
     if (!draft) return;
-    const success = await savePost(draft);
+    
+    // Auto-calculate read time
+    const readMinutes = calculateReadMinutes(draft.contentHtml);
+    const postToSave = { ...draft, readMinutes };
+    
+    const success = await savePost(postToSave);
     if (success) {
-      setPosts(ps => { const i = ps.findIndex(p=>p.id===draft.id); if (i>=0) { const copy=[...ps]; copy[i]=draft; return copy; } return [draft, ...ps]; });
+      setPosts(ps => { 
+        const i = ps.findIndex(p=>p.id===postToSave.id); 
+        if (i>=0) { 
+          const copy=[...ps]; 
+          copy[i]=postToSave; 
+          return copy; 
+        } 
+        return [postToSave, ...ps]; 
+      });
       setDraft(null);
     } else {
       alert('Failed to save post. Please try again.');
@@ -180,10 +212,10 @@ const AdminPage: React.FC = () => {
   };
   
   const publish = async (id: string, published: boolean) => {
-    console.log(`Publishing post ${id} as ${published ? 'published' : 'draft'}`);
     const post = posts.find(p => p.id === id);
     if (post) {
-      const updatedPost = { ...post, published };
+      const readMinutes = calculateReadMinutes(post.contentHtml);
+      const updatedPost = { ...post, published, readMinutes };
       const success = await savePost(updatedPost);
       if (success) {
         setPosts(ps => ps.map(p => p.id===id? updatedPost: p));
@@ -195,11 +227,12 @@ const AdminPage: React.FC = () => {
 
   const publishDraft = async () => {
     if (!draft) return;
-    console.log('Publishing draft:', draft);
-    const publishedDraft = { ...draft, published: true };
-    console.log('Published draft:', publishedDraft);
+    
+    // Auto-calculate read time
+    const readMinutes = calculateReadMinutes(draft.contentHtml);
+    const publishedDraft = { ...draft, published: true, readMinutes };
+    
     const success = await savePost(publishedDraft);
-    console.log('Save result:', success);
     if (success) {
       setPosts(ps => { 
         const i = ps.findIndex(p=>p.id===draft.id); 
@@ -230,8 +263,22 @@ const AdminPage: React.FC = () => {
         {draft && (
           <div className="bg-white ring-1 ring-gray-100 rounded-xl shadow-soft p-6 mb-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input value={draft.title} onChange={e=>{ const title=e.target.value; const auto = draft.slug ? draft.slug : toSlug(title); setDraft({ ...draft, title, slug: auto }); }} placeholder="Title" className="border rounded-md p-3 w-full" />
-              <input value={draft.slug||''} onChange={e=>setDraft({ ...draft, slug: toSlug(e.target.value) })} placeholder="Slug (optional) e.g. designing-fast-web-apps" className="border rounded-md p-3 w-full" />
+              <input 
+                value={draft.title} 
+                onChange={e=>{ 
+                  const title=e.target.value; 
+                  const auto = draft.slug ? draft.slug : toSlug(title); 
+                  setDraft({ ...draft, title, slug: auto }); 
+                }} 
+                placeholder="Title" 
+                className="border rounded-md p-3 w-full" 
+              />
+              <input 
+                value={draft.slug||''} 
+                onChange={e=>setDraft({ ...draft, slug: toSlug(e.target.value) })} 
+                placeholder="Slug (e.g. designing-fast-web-apps)" 
+                className="border rounded-md p-3 w-full" 
+              />
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Featured image</label>
                 <input
@@ -249,8 +296,12 @@ const AdminPage: React.FC = () => {
                   className="block w-full text-sm text-gray-700 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:text-gray-700 hover:file:bg-gray-50"
                 />
               </div>
-              <input value={draft.tags.join(', ')} onChange={e=>setDraft({ ...draft, tags: e.target.value.split(',').map(t=>t.trim()).filter(Boolean) })} placeholder="Tags (comma separated)" className="border rounded-md p-3 w-full" />
-              <input value={draft.metaDescription} onChange={e=>setDraft({ ...draft, metaDescription: e.target.value })} placeholder="Meta Description (for SEO)" className="border rounded-md p-3 w-full" />
+              <input 
+                value={draft.tags.join(', ')} 
+                onChange={e=>setDraft({ ...draft, tags: e.target.value.split(',').map(t=>t.trim()).filter(Boolean) })} 
+                placeholder="Tags (comma separated, e.g. SEO, Content)" 
+                className="border rounded-md p-3 w-full" 
+              />
             </div>
             {draft.cover && (
               <div className="mt-2">
@@ -258,10 +309,15 @@ const AdminPage: React.FC = () => {
               </div>
             )}
             <div className="mt-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Content</label>
               <RichTextEditor value={draft.contentHtml} onChange={(html)=>setDraft({ ...draft, contentHtml: html })} />
+              <p className="mt-2 text-xs text-gray-500">
+                Estimated read time: {calculateReadMinutes(draft.contentHtml)} min • Excerpt will be auto-generated from content
+              </p>
             </div>
             <div className="mt-4 flex gap-2">
               <button onClick={publishDraft} className="px-4 py-2 rounded-md bg-green-600 text-white text-sm font-semibold hover:bg-green-700">Publish</button>
+              <button onClick={saveDraft} className="px-4 py-2 rounded-md border text-sm">Save Draft</button>
               <button onClick={()=>setDraft(null)} className="px-4 py-2 rounded-md border text-sm">Cancel</button>
             </div>
           </div>
@@ -278,7 +334,9 @@ const AdminPage: React.FC = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="font-heading text-lg font-semibold text-gray-900">{p.title || 'Untitled'}</h3>
-                  <p className="text-xs text-gray-500">{new Date(p.date).toLocaleDateString()} • {p.published ? 'Published' : 'Draft'}</p>
+                  <p className="text-xs text-gray-500">
+                    {new Date(p.date).toLocaleDateString()} • {p.published ? 'Published' : 'Draft'} • {p.readMinutes || 1} min read
+                  </p>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={()=>editPost(p)} className="px-3 py-1.5 rounded-md border text-sm">Edit</button>
@@ -286,7 +344,6 @@ const AdminPage: React.FC = () => {
                   <button onClick={()=>removePost(p.id)} className="px-3 py-1.5 rounded-md border text-sm">Delete</button>
                 </div>
               </div>
-              <p className="mt-2 text-gray-600 text-sm">{p.metaDescription}</p>
             </div>
           ))}
           </div>
@@ -297,5 +354,3 @@ const AdminPage: React.FC = () => {
 };
 
 export default AdminPage;
-
-
