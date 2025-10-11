@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-6 text-sm">
               <a 
-                href="https://devjugnunagar.us.cc/api/sitemap.xml" 
+                href="https://devjugnunagar.us.cc/sitemap.xml" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2 text-gray-400 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 rounded-lg px-3 py-2 hover:bg-gray-800/50"
