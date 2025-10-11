@@ -19,4 +19,4 @@ View your app in AI Studio: https://ai.studio/apps/drive/15kW5qOHg42psND97k8R4XP
 3. Run the app:
    `npm run dev`
 
-   Still my vercel is not showing new updates.
+   HELLO WORLD
