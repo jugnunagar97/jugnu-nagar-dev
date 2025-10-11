@@ -231,7 +231,7 @@ const SitemapPage: React.FC = () => {
               <h4 className="font-semibold text-gray-900 mb-2">XML Sitemap</h4>
               <p className="text-sm text-gray-600 mb-3">Machine-readable sitemap for search engines</p>
               <a 
-                href="/api/sitemap.xml" 
+                href="https://jugnunagar.dev/api/sitemap.xml" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-sm text-brand-blue hover:text-blue-700 transition-colors"
@@ -244,7 +244,7 @@ const SitemapPage: React.FC = () => {
               <h4 className="font-semibold text-gray-900 mb-2">Sitemap Index</h4>
               <p className="text-sm text-gray-600 mb-3">Index of all sitemaps</p>
               <a 
-                href="/api/sitemap-index.xml" 
+                href="https://jugnunagar.dev/api/sitemap-index.xml" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-sm text-brand-blue hover:text-blue-700 transition-colors"
@@ -257,7 +257,7 @@ const SitemapPage: React.FC = () => {
               <h4 className="font-semibold text-gray-900 mb-2">Robots.txt</h4>
               <p className="text-sm text-gray-600 mb-3">Instructions for web crawlers</p>
               <a 
-                href="/robots.txt" 
+                href="https://jugnunagar.dev/robots.txt" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-sm text-brand-blue hover:text-blue-700 transition-colors"

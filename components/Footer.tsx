@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
               </Link>
               
               <a 
-                href="/api/sitemap.xml" 
+                href="https://jugnunagar.dev/api/sitemap.xml" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2 text-gray-400 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 rounded-lg px-3 py-2 hover:bg-gray-800/50"
