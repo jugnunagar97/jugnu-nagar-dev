@@ -42,11 +42,11 @@ const App: React.FC = () => {
     <Router>
       <ScrollManager />
       <Header />
-      <main className="pt-20"> {/* Fix: Added padding-top to prevent content from being hidden by the fixed header */}
+      <main className="pt-20">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<BlogPage />} />
-          <Route path=":slug" element={<BlogPostPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />  {/* Changed from ":slug" to "/blog/:slug" */}
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

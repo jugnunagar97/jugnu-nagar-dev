@@ -38,13 +38,13 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => (
   <article className="group rounded-2xl bg-white ring-1 ring-gray-100 shadow-soft overflow-hidden flex flex-col hover:shadow-lg transition-shadow">
     <div className="relative overflow-hidden">
       <img
-        src={post.cover}
+        src={post.cover || 'https://via.placeholder.com/800x450'}  // Add fallback image
         alt={post.title}
         loading="lazy"
         className="w-full aspect-[16/9] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
       />
       <div className="absolute top-3 left-3 flex gap-2">
-        {post.tags.slice(0, 2).map((t) => (
+        {post.tags?.slice(0, 2).map((t) => (  // Add optional chaining
           <span
             key={t}
             className="bg-white/95 text-gray-800 text-xs font-semibold px-2 py-0.5 rounded-full ring-1 ring-gray-200"
@@ -54,16 +54,20 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => (
         ))}
       </div>
     </div>
-    <a href={`/${post.slug || post.id}`} className="p-6 flex-1 flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 rounded">
+    <a href={`/blog/${post.slug || post.id}`} className="p-6 flex-1 flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 rounded">
       <h3 className="font-heading text-2xl font-medium text-gray-900 leading-snug">
         {post.title}
       </h3>
       <div className="mt-2 text-sm text-gray-500 flex items-center gap-2">
         <span>{new Date(post.date).toLocaleDateString()}</span>
-        <span className="w-1 h-1 rounded-full bg-gray-300" />
-        <span>{post.readMinutes} min read</span>
+        {post.readMinutes && (  // Add conditional check
+          <>
+            <span className="w-1 h-1 rounded-full bg-gray-300" />
+            <span>{post.readMinutes} min read</span>
+          </>
+        )}
       </div>
-      <p className="mt-3 text-gray-700 leading-relaxed flex-1">{post.excerpt}</p>
+      <p className="mt-3 text-gray-700 leading-relaxed flex-1">{post.excerpt || 'No excerpt available'}</p>  {/* Add fallback */}
       <div className="mt-5 pt-4 border-t border-gray-100 text-brand-blue text-sm font-semibold">
         Read more →
       </div>
