@@ -6,10 +6,9 @@ type StoredPost = {
   slug?: string;
   tags: string[];
   cover?: string;
-  excerpt: string;
+  metaDescription: string;
   contentHtml: string;
   date: string;
-  readMinutes: number;
   published: boolean;
 };
 
@@ -153,7 +152,7 @@ const AdminPage: React.FC = () => {
   if (!authed) return <LoginGate onUnlock={()=>setAuthed(true)} />;
 
   const toSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-');
-  const startNew = () => setDraft({ id: crypto.randomUUID(), title: '', slug: '', tags: [], cover: '', excerpt: '', contentHtml: '', date: new Date().toISOString(), readMinutes: 5, published: false });
+  const startNew = () => setDraft({ id: crypto.randomUUID(), title: '', slug: '', tags: [], cover: '', metaDescription: '', contentHtml: '', date: new Date().toISOString(), published: false });
   const editPost = (p: StoredPost) => setDraft({ ...p });
   
   const removePost = async (id: string) => {
@@ -187,6 +186,26 @@ const AdminPage: React.FC = () => {
       } else {
         alert('Failed to update post status. Please try again.');
       }
+    }
+  };
+
+  const publishDraft = async () => {
+    if (!draft) return;
+    const publishedDraft = { ...draft, published: true };
+    const success = await savePost(publishedDraft);
+    if (success) {
+      setPosts(ps => { 
+        const i = ps.findIndex(p=>p.id===draft.id); 
+        if (i>=0) { 
+          const copy=[...ps]; 
+          copy[i]=publishedDraft; 
+          return copy; 
+        } 
+        return [publishedDraft, ...ps]; 
+      });
+      setDraft(null);
+    } else {
+      alert('Failed to publish post. Please try again.');
     }
   };
 
@@ -224,19 +243,18 @@ const AdminPage: React.FC = () => {
                 />
               </div>
               <input value={draft.tags.join(', ')} onChange={e=>setDraft({ ...draft, tags: e.target.value.split(',').map(t=>t.trim()).filter(Boolean) })} placeholder="Tags (comma separated)" className="border rounded-md p-3 w-full" />
-              <input value={draft.readMinutes} onChange={e=>setDraft({ ...draft, readMinutes: Number(e.target.value||5) })} placeholder="Read minutes" className="border rounded-md p-3 w-full" />
+              <input value={draft.metaDescription} onChange={e=>setDraft({ ...draft, metaDescription: e.target.value })} placeholder="Meta Description (for SEO)" className="border rounded-md p-3 w-full" />
             </div>
             {draft.cover && (
               <div className="mt-2">
                 <img src={draft.cover} alt="Cover preview" className="max-h-40 rounded-md ring-1 ring-gray-200" />
               </div>
             )}
-            <textarea value={draft.excerpt} onChange={e=>setDraft({ ...draft, excerpt: e.target.value })} placeholder="Excerpt" className="border rounded-md p-3 w-full mt-4" />
             <div className="mt-4">
               <RichTextEditor value={draft.contentHtml} onChange={(html)=>setDraft({ ...draft, contentHtml: html })} />
             </div>
             <div className="mt-4 flex gap-2">
-              <button onClick={saveDraft} className="px-4 py-2 rounded-md bg-brand-blue text-white text-sm font-semibold">Save</button>
+              <button onClick={publishDraft} className="px-4 py-2 rounded-md bg-green-600 text-white text-sm font-semibold hover:bg-green-700">Publish</button>
               <button onClick={()=>setDraft(null)} className="px-4 py-2 rounded-md border text-sm">Cancel</button>
             </div>
           </div>
@@ -253,7 +271,7 @@ const AdminPage: React.FC = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="font-heading text-lg font-semibold text-gray-900">{p.title || 'Untitled'}</h3>
-                  <p className="text-xs text-gray-500">{new Date(p.date).toLocaleDateString()} • {p.readMinutes} min • {p.published ? 'Published' : 'Draft'}</p>
+                  <p className="text-xs text-gray-500">{new Date(p.date).toLocaleDateString()} • {p.published ? 'Published' : 'Draft'}</p>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={()=>editPost(p)} className="px-3 py-1.5 rounded-md border text-sm">Edit</button>
@@ -261,7 +279,7 @@ const AdminPage: React.FC = () => {
                   <button onClick={()=>removePost(p.id)} className="px-3 py-1.5 rounded-md border text-sm">Delete</button>
                 </div>
               </div>
-              <p className="mt-2 text-gray-600 text-sm">{p.excerpt}</p>
+              <p className="mt-2 text-gray-600 text-sm">{p.metaDescription}</p>
             </div>
           ))}
           </div>
