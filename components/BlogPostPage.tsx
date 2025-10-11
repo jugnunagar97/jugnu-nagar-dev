@@ -15,6 +15,138 @@ type StoredPost = {
   published?: boolean;
 };
 
+// Function to generate Article schema markup
+function generateArticleSchema(post: StoredPost): object {
+  const baseUrl = 'https://jugnunagar.dev';
+  const postUrl = `${baseUrl}/blog/${post.slug || post.id}`;
+  
+  // Strip HTML tags from content for description
+  const stripHtml = (html: string): string => {
+    const tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.excerpt || stripHtml(post.contentHtml).substring(0, 160),
+    "image": post.cover ? {
+      "@type": "ImageObject",
+      "url": post.cover.startsWith('http') ? post.cover : `${baseUrl}${post.cover}`,
+      "width": 800,
+      "height": 450
+    } : undefined,
+    "author": {
+      "@type": "Person",
+      "name": "Jugnu Nagar",
+      "jobTitle": "Full Stack Developer",
+      "email": "mailto:dev.nagarjugnu@gmail.com",
+      "url": baseUrl,
+      "sameAs": [
+        "https://x.com/serp_guy",
+        "https://in.linkedin.com/in/jugnu-nagar"
+      ]
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Jugnu Nagar",
+      "url": baseUrl
+    },
+    "datePublished": post.date,
+    "dateModified": post.date,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": postUrl
+    },
+    "url": postUrl,
+    "articleSection": "Technology",
+    "keywords": post.tags?.join(', ') || "web development, programming, technology",
+    "wordCount": post.contentHtml ? stripHtml(post.contentHtml).split(' ').length : undefined,
+    "timeRequired": post.readMinutes ? `PT${post.readMinutes}M` : undefined,
+    "inLanguage": "en-US",
+    "isAccessibleForFree": true
+  };
+}
+
+// Custom hook to manage document head
+function useDocumentHead(post: StoredPost | null) {
+  useEffect(() => {
+    if (!post) return;
+
+    // Update page title
+    document.title = `${post.title} | Jugnu Nagar`;
+
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', post.excerpt || "Read this article by Jugnu Nagar");
+    }
+
+    // Update Open Graph meta tags
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', post.title);
+    }
+
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', post.excerpt || "Read this article by Jugnu Nagar");
+    }
+
+    const ogType = document.querySelector('meta[property="og:type"]');
+    if (ogType) {
+      ogType.setAttribute('content', 'article');
+    }
+
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) {
+      ogUrl.setAttribute('content', `https://jugnunagar.dev/blog/${post.slug || post.id}`);
+    }
+
+    // Add or update article schema
+    let schemaScript = document.querySelector('script[type="application/ld+json"][data-article-schema]');
+    if (!schemaScript) {
+      schemaScript = document.createElement('script');
+      schemaScript.setAttribute('type', 'application/ld+json');
+      schemaScript.setAttribute('data-article-schema', 'true');
+      document.head.appendChild(schemaScript);
+    }
+    schemaScript.textContent = JSON.stringify(generateArticleSchema(post));
+
+    // Cleanup function
+    return () => {
+      // Reset title
+      document.title = "Jugnu Nagar — Full Stack Developer";
+      
+      // Reset meta description
+      if (metaDescription) {
+        metaDescription.setAttribute('content', 'Jugnu Nagar — Full Stack Developer building clean, fast, and scalable web applications. Portfolio, services, work, and contact.');
+      }
+
+      // Reset Open Graph tags
+      if (ogTitle) {
+        ogTitle.setAttribute('content', 'Jugnu Nagar — Full Stack Developer');
+      }
+      if (ogDescription) {
+        ogDescription.setAttribute('content', 'Clean, fast, and scalable web apps. View services, projects, and get in touch.');
+      }
+      if (ogType) {
+        ogType.setAttribute('content', 'website');
+      }
+      if (ogUrl) {
+        ogUrl.setAttribute('content', 'https://jugnunagar.dev/');
+      }
+
+      // Remove article schema
+      if (schemaScript) {
+        schemaScript.remove();
+      }
+    };
+  }, [post]);
+}
+
 async function fetchPostBySlug(slug: string | undefined): Promise<StoredPost | null> {
   if (!slug) return null;
   try {
@@ -58,6 +190,9 @@ const BlogPostPage: React.FC = () => {
   const { slug } = useParams();
   const [post, setPost] = useState<StoredPost | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Use the custom hook to manage document head
+  useDocumentHead(post);
 
   useEffect(() => {
     const loadPost = async () => {

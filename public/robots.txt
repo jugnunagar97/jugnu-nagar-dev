@@ -1,5 +1,13 @@
 User-agent: *
 Allow: /
+
+# Static sitemap (fallback)
 Sitemap: https://jugnunagar.dev/sitemap.xml
+
+# Dynamic sitemap (includes blog posts)
+Sitemap: https://jugnunagar.dev/api/sitemap.xml
+
+# Sitemap index
+Sitemap: https://jugnunagar.dev/api/sitemap-index.xml
 
 

@@ -242,6 +242,138 @@ app.delete('/api/admin/posts/:id', (req, res) => {
   }
 });
 
+// Dynamic sitemap generation
+app.get('/api/sitemap.xml', async (req, res) => {
+  try {
+    const baseUrl = 'https://jugnunagar.dev';
+    const currentDate = new Date().toISOString().split('T')[0];
+    
+    // Get all published blog posts
+    const posts = loadBlogPosts();
+    const publishedPosts = posts.filter(post => post.published === true);
+    
+    // Static pages configuration
+    const staticPages = [
+      {
+        url: '/',
+        changefreq: 'weekly',
+        priority: '1.0',
+        lastmod: currentDate
+      },
+      {
+        url: '/blog',
+        changefreq: 'weekly',
+        priority: '0.9',
+        lastmod: currentDate
+      },
+      {
+        url: '/services',
+        changefreq: 'monthly',
+        priority: '0.8',
+        lastmod: currentDate
+      },
+      {
+        url: '/about',
+        changefreq: 'monthly',
+        priority: '0.7',
+        lastmod: currentDate
+      },
+      {
+        url: '/contact',
+        changefreq: 'monthly',
+        priority: '0.7',
+        lastmod: currentDate
+      },
+      {
+        url: '/projects',
+        changefreq: 'monthly',
+        priority: '0.8',
+        lastmod: currentDate
+      },
+      {
+        url: '/node-developer',
+        changefreq: 'monthly',
+        priority: '0.6',
+        lastmod: currentDate
+      }
+    ];
+    
+    // Generate XML sitemap
+    let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+    
+    // Add static pages
+    staticPages.forEach(page => {
+      const lastmod = page.lastmod || currentDate;
+      sitemap += `
+  <url>
+    <loc>${baseUrl}${page.url}</loc>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+    <lastmod>${lastmod}</lastmod>
+  </url>`;
+    });
+    
+    // Add blog posts
+    publishedPosts.forEach(post => {
+      const postUrl = `/blog/${post.slug || post.id}`;
+      const postDate = new Date(post.date).toISOString().split('T')[0];
+      
+      sitemap += `
+  <url>
+    <loc>${baseUrl}${postUrl}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>${postDate}</lastmod>
+  </url>`;
+    });
+    
+    sitemap += `
+</urlset>`;
+    
+    // Set proper headers for XML
+    res.set('Content-Type', 'application/xml');
+    res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
+    res.send(sitemap);
+    
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
+    res.status(500).json({ 
+      ok: false, 
+      error: 'Failed to generate sitemap',
+      details: error.message 
+    });
+  }
+});
+
+// Generate sitemap index
+app.get('/api/sitemap-index.xml', async (req, res) => {
+  try {
+    const baseUrl = 'https://jugnunagar.dev';
+    const currentDate = new Date().toISOString().split('T')[0];
+    
+    const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${baseUrl}/api/sitemap.xml</loc>
+    <lastmod>${currentDate}</lastmod>
+  </sitemap>
+</sitemapindex>`;
+    
+    res.set('Content-Type', 'application/xml');
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.send(sitemapIndex);
+    
+  } catch (error) {
+    console.error('Error generating sitemap index:', error);
+    res.status(500).json({ 
+      ok: false, 
+      error: 'Failed to generate sitemap index',
+      details: error.message 
+    });
+  }
+});
+
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 app.listen(PORT, () => {
