@@ -1,10 +1,5 @@
-// Simple in-memory storage for serverless functions
-let blogPosts = [];
-let isInitialized = false;
-
-async function initializeStorage() {
-  if (isInitialized) return;
-  
+// File-based storage for serverless functions
+async function loadBlogPosts() {
   try {
     const fs = require('fs');
     const path = require('path');
@@ -13,20 +8,17 @@ async function initializeStorage() {
     
     if (fs.existsSync(BLOG_POSTS_FILE)) {
       const data = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
-      blogPosts = JSON.parse(data);
-      console.log('Loaded existing blog posts:', blogPosts.length);
+      const posts = JSON.parse(data);
+      console.log('Loaded blog posts from file:', posts.length);
+      return posts;
+    } else {
+      console.log('No blog posts file found');
+      return [];
     }
   } catch (error) {
-    console.log('No existing data found, starting fresh');
-    blogPosts = [];
+    console.error('Error loading blog posts:', error);
+    return [];
   }
-  
-  isInitialized = true;
-}
-
-async function loadBlogPosts() {
-  await initializeStorage();
-  return [...blogPosts];
 }
 
 export default async function handler(req, res) {
