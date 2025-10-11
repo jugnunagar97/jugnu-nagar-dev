@@ -1,63 +1,68 @@
-// Simple in-memory storage for serverless functions
-let blogPosts = [];
-let isInitialized = false;
+import { put, list } from '@vercel/blob';
 
-async function initializeStorage() {
-  if (isInitialized) return;
-  
+// Load blog posts from Vercel Blob storage
+async function loadBlogPosts() {
   try {
-    const fs = require('fs');
-    const path = require('path');
+    const { blobs } = await list();
+    const blogFile = blobs.find(b => b.pathname === 'blog-posts.json');
     
-    const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
-    
-    if (fs.existsSync(BLOG_POSTS_FILE)) {
-      const data = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
-      blogPosts = JSON.parse(data);
-      console.log('Loaded existing blog posts:', blogPosts.length);
+    if (blogFile) {
+      const response = await fetch(blogFile.url);
+      const posts = await response.json();
+      console.log('Loaded blog posts from Blob:', posts.length);
+      return posts;
+    } else {
+      console.log('No blog posts file found, starting fresh');
+      return [];
     }
   } catch (error) {
-    console.log('No existing data found, starting fresh');
-    blogPosts = [];
+    console.error('Error loading blog posts:', error);
+    return [];
   }
-  
-  isInitialized = true;
 }
 
-async function loadBlogPosts() {
-  await initializeStorage();
-  return [...blogPosts];
-}
-
-async function addBlogPost(post) {
-  await initializeStorage();
-  const existingIndex = blogPosts.findIndex(p => p.id === post.id);
-  
-  if (existingIndex >= 0) {
-    blogPosts[existingIndex] = post;
-  } else {
-    blogPosts.unshift(post);
-  }
-  
-  // Try to persist to file system
+// Save blog posts to Vercel Blob storage
+async function saveBlogPosts(posts) {
   try {
-    const fs = require('fs');
-    const path = require('path');
+    // Convert posts array to JSON string
+    const jsonData = JSON.stringify(posts, null, 2);
     
-    const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
-    const dataDir = path.dirname(BLOG_POSTS_FILE);
+    // Upload to Blob storage
+    const blob = await put('blog-posts.json', jsonData, {
+      access: 'public',
+      contentType: 'application/json',
+    });
     
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+    console.log('Successfully saved to Blob storage:', blob.url);
+    return true;
+  } catch (error) {
+    console.error('Error saving to Blob storage:', error);
+    return false;
+  }
+}
+
+// Add or update a blog post
+async function addBlogPost(post) {
+  try {
+    const posts = await loadBlogPosts();
+    const existingIndex = posts.findIndex(p => p.id === post.id);
+    
+    if (existingIndex >= 0) {
+      // Update existing post
+      posts[existingIndex] = post;
+      console.log('Updated existing post:', post.id);
+    } else {
+      // Add new post at the beginning
+      posts.unshift(post);
+      console.log('Added new post:', post.id);
     }
     
-    fs.writeFileSync(BLOG_POSTS_FILE, JSON.stringify(blogPosts, null, 2));
-    console.log('Successfully persisted to file system');
-  } catch (fileError) {
-    console.log('File system persistence failed, using in-memory storage:', fileError.message);
+    // Save back to Blob storage
+    return await saveBlogPosts(posts);
+  } catch (error) {
+    console.error('Error adding blog post:', error);
+    return false;
   }
-  
-  return true;
 }
 
 export default async function handler(req, res) {
@@ -86,9 +91,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ ok: false, error: 'Missing required fields' });
       }
       
-      console.log('Adding blog post:', newPost);
+      console.log('Saving blog post:', newPost);
       const success = await addBlogPost(newPost);
-      console.log('Add result:', success);
       
       if (success) {
         res.json({ ok: true, post: newPost });
@@ -98,7 +102,6 @@ export default async function handler(req, res) {
       }
     } catch (error) {
       console.error('Error saving post:', error);
-      console.error('Error details:', error.message, error.stack);
       res.status(500).json({ ok: false, error: 'Failed to save post', details: error.message });
     }
   } else {

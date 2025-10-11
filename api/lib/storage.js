@@ -1,4 +1,4 @@
-// Simple in-memory storage with persistence for serverless functions
+// Simple in-memory storage for serverless functions
 // This works better than file system operations in Vercel
 
 let blogPosts = [];
@@ -10,8 +10,8 @@ async function initializeStorage() {
   
   try {
     // Try to load from existing file if it exists
-    const fs = await import('fs');
-    const path = await import('path');
+    const fs = require('fs');
+    const path = require('path');
     
     const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
     
@@ -40,8 +40,8 @@ export async function saveBlogPosts(posts) {
     
     // Try to persist to file system (may not work in serverless)
     try {
-      const fs = await import('fs');
-      const path = await import('path');
+      const fs = require('fs');
+      const path = require('path');
       
       const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
       const dataDir = path.dirname(BLOG_POSTS_FILE);

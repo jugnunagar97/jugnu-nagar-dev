@@ -1,18 +1,20 @@
-// File-based storage for serverless functions
+import { list } from '@vercel/blob';
+
+// Load blog posts from Vercel Blob storage
 async function loadBlogPosts() {
   try {
-    const fs = require('fs');
-    const path = require('path');
+    // List all blobs to find our blog posts file
+    const { blobs } = await list();
+    const blogFile = blobs.find(b => b.pathname === 'blog-posts.json');
     
-    const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
-    
-    if (fs.existsSync(BLOG_POSTS_FILE)) {
-      const data = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
-      const posts = JSON.parse(data);
-      console.log('Loaded blog posts from file:', posts.length);
+    if (blogFile) {
+      // Fetch and parse the JSON file
+      const response = await fetch(blogFile.url);
+      const posts = await response.json();
+      console.log('Loaded blog posts from Blob:', posts.length);
       return posts;
     } else {
-      console.log('No blog posts file found');
+      console.log('No blog posts file found in Blob storage');
       return [];
     }
   } catch (error) {
