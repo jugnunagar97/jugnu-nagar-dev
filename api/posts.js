@@ -1,4 +1,33 @@
-import { loadBlogPosts } from './lib/storage.js';
+// Simple in-memory storage for serverless functions
+let blogPosts = [];
+let isInitialized = false;
+
+async function initializeStorage() {
+  if (isInitialized) return;
+  
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    
+    const BLOG_POSTS_FILE = path.join(process.cwd(), 'data', 'blog-posts.json');
+    
+    if (fs.existsSync(BLOG_POSTS_FILE)) {
+      const data = fs.readFileSync(BLOG_POSTS_FILE, 'utf8');
+      blogPosts = JSON.parse(data);
+      console.log('Loaded existing blog posts:', blogPosts.length);
+    }
+  } catch (error) {
+    console.log('No existing data found, starting fresh');
+    blogPosts = [];
+  }
+  
+  isInitialized = true;
+}
+
+async function loadBlogPosts() {
+  await initializeStorage();
+  return [...blogPosts];
+}
 
 export default async function handler(req, res) {
   // Set CORS headers
