@@ -1,63 +1,129 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { WORK_PROJECTS } from '../constants';
+import React from "react";
+import { Link } from "react-router-dom";
+import { WORK_PROJECTS } from "../constants";
+import { motion } from "framer-motion";
+import { cn } from "../src/lib/utils";
 
-const Work: React.FC = () => {
+// --- 3D CARD COMPONENT ---
+const PinContainer = ({
+  children,
+  title,
+  href,
+  className,
+  containerClassName,
+}: {
+  children: React.ReactNode;
+  title?: string;
+  href?: string;
+  className?: string;
+  containerClassName?: string;
+}) => {
+  const [transform, setTransform] = React.useState("translate(-50%,-50%) rotateX(0deg)");
+
+  const onMouseEnter = () => {
+    setTransform("translate(-50%,-50%) rotateX(40deg) scale(0.8)");
+  };
+  const onMouseLeave = () => {
+    setTransform("translate(-50%,-50%) rotateX(0deg) scale(1)");
+  };
+
   return (
-    <section id="work" className="py-24 sm:py-32 bg-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 sm:mb-20">
-          <h2 className="font-heading text-3xl sm:text-4xl font-semibold tracking-wider text-gray-900">My Work</h2>
-          <p className="mt-3 text-gray-500 max-w-2xl mx-auto">A selection of recent projects showcasing clean UI, performant code, and pragmatic architecture.</p>
-          <div className="w-20 h-1 bg-brand-blue mx-auto mt-6 rounded-full"></div>
+    <div
+      className={cn("relative group/pin z-50 cursor-pointer", containerClassName)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      <div
+        style={{ perspective: "1000px", transform: "rotateX(70deg) translateZ(0deg)" }}
+        className="absolute left-1/2 top-1/2 ml-[0.09375rem] mt-4 -translate-x-1/2 -translate-y-1/2"
+      >
+        <div
+          style={{ transform: transform }}
+          className="absolute left-1/2 p-4 top-1/2 flex justify-start items-start  rounded-2xl  shadow-[0_8px_16px_rgb(0_0_0/0.4)] bg-black border border-white/[0.1] group-hover/pin:border-white/[0.2] transition duration-700 overflow-hidden"
+        >
+          <div className={cn(" relative z-50 ", className)}>{children}</div>
         </div>
-        
-        <div className="space-y-24 sm:space-y-32">
-          {WORK_PROJECTS.map((project, index) => (
-            <div 
-              key={project.name}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-            >
-              <div className={`relative rounded-2xl overflow-hidden shadow-xl ring-1 ring-gray-100 group ${index % 2 !== 0 ? 'lg:order-last' : ''}`}>
-                <img src={project.imageUrl} alt={project.name} loading="lazy" className={`w-full h-auto object-cover transition-transform duration-500 ease-in-out group-hover:scale-[1.02] ${project.isConfidential ? 'blur-sm' : ''}`} />
-                {project.isConfidential && (
-                  <div className="absolute inset-0 bg-blue-900/40 flex flex-col items-center justify-center p-8 text-center">
-                    <h3 className="font-heading text-white text-2xl font-bold">Confidential project.</h3>
-                    <p className="text-blue-100 text-lg mt-2">What happens in Cupertino stays in Cupertino.</p>
-                  </div>
-                )}
-                {!project.isConfidential && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <Link to={project.projectLink} className="font-bold text-white border-2 border-white py-3 px-8 rounded-lg hover:bg-white hover:text-black transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
-                        View Project Details
-                      </Link>
-                    </div>
-                )}
-              </div>
-              <div className="lg:px-4">
-                <h3 className="font-heading text-3xl font-semibold text-gray-900">{project.name}</h3>
-                <p className="mt-4 text-gray-600 leading-relaxed">{project.description}</p>
-                <div className="mt-6">
-                  <h4 className="font-heading font-medium text-gray-700 tracking-wider">DEVELOPMENT TOOLS</h4>
-                  <ul className="mt-3 space-y-2">
-                    {project.tools.map(tool => 
-                      <li key={tool} className="flex items-center">
-                          <span className="text-brand-blue mr-3">&#10003;</span>
-                          <span>{tool}</span>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-                <Link to={project.projectLink} className="mt-8 inline-flex items-center gap-2 text-brand-blue font-semibold hover:underline group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40 rounded">
-                  View project <span className="transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
-                </Link>
-              </div>
-            </div>
-          ))}
+      </div>
+      <PinPerspective title={title} href={href} />
+    </div>
+  );
+};
+
+const PinPerspective = ({ title, href }: { title?: string; href?: string }) => {
+  return (
+    <motion.div className="pointer-events-none w-96 h-80 flex items-center justify-center opacity-0 group-hover/pin:opacity-100 z-[60] transition duration-500">
+      <div className=" w-full h-full -mt-7 flex-none inset-0">
+        <div className="absolute top-0 inset-x-0  flex justify-center">
+          <a
+            href={href}
+            target={"_blank"}
+            className="relative flex space-x-2 items-center z-10 rounded-full bg-zinc-950 py-0.5 px-4 ring-1 ring-white/10 "
+          >
+            <span className="relative z-20 text-white text-xs font-bold inline-block py-0.5">
+              {title}
+            </span>
+            <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-emerald-400/0 via-emerald-400/90 to-emerald-400/0 transition-opacity duration-500 group-hover/btn:opacity-40"></span>
+          </a>
         </div>
 
-        {/* Removed deprecated SEE MORE link now that dropdown pages are gone */}
+        <div
+          style={{ perspective: "1000px", transform: "rotateX(70deg) translateZ(0)" }}
+          className="absolute left-1/2 top-1/2 ml-[0.09375rem] mt-4 -translate-x-1/2 -translate-y-1/2"
+        >
+            <motion.div
+                initial={{ opacity: 0, scale: 0, x: "-50%", y: "-50%" }}
+                animate={{ opacity: [0, 1, 0.5, 0], scale: 1, z: 0 }}
+                transition={{ duration: 6, repeat: Infinity, delay: 0 }}
+                className="absolute left-1/2 top-1/2  h-[11.25rem] w-[11.25rem] rounded-[50%] bg-sky-500/[0.08] shadow-[0_8px_16px_rgb(0_0_0/0.4)]"
+            ></motion.div>
+        </div>
       </div>
+    </motion.div>
+  );
+};
+
+const Work = () => {
+  return (
+    <section id="work" className="py-24 bg-neutral-950 w-full">
+        <div className="container mx-auto px-4">
+            <div className="text-center mb-20">
+                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Featured Work</h2>
+                <p className="text-neutral-400 max-w-lg mx-auto">
+                    Hover over the cards to see the 3D perspective effect.
+                </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-16 mt-10">
+                {WORK_PROJECTS.map((project) => (
+                    <div key={project.name} className="h-[25rem] w-[20rem] flex items-center justify-center sm:w-96 w-[80vw]">
+                        <PinContainer title={project.name} href={project.projectLink}>
+                            <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
+                                <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
+                                    {project.name}
+                                </h3>
+                                <div className="text-base !m-0 !p-0 font-normal">
+                                    <span className="text-slate-500 ">
+                                        {project.description.substring(0, 80)}...
+                                    </span>
+                                </div>
+                                <div className="flex flex-1 w-full rounded-lg mt-4 bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 overflow-hidden relative">
+                                    <img 
+                                        src={project.imageUrl} 
+                                        alt={project.name}
+                                        className="absolute inset-0 w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                                    />
+                                    {project.isConfidential && (
+                                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
+                                            <p className="font-bold text-white uppercase tracking-widest border border-white/50 px-4 py-2">Confidential</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </PinContainer>
+                    </div>
+                ))}
+            </div>
+        </div>
     </section>
   );
 };

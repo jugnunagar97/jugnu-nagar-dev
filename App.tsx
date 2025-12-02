@@ -40,21 +40,23 @@ const ScrollManager: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <ScrollManager />
-      <Header />
-      <main className="pt-20">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/blog/:slug" element={<BlogPostPage />} />  {/* Changed from ":slug" to "/blog/:slug" */}
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </main>
-      <Footer />
-      <SpeedInsights />
-    </Router>
+    <div className="bg-black min-h-screen text-white">
+      <Router>
+        <ScrollManager />
+        <Header />
+        <main className="pt-20">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />  {/* Changed from ":slug" to "/blog/:slug" */}
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </main>
+        <Footer />
+        <SpeedInsights />
+      </Router>
+    </div>
   );
 };
 

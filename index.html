@@ -1,25 +1,34 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jugnu Nagar — Full Stack Developer</title>
     <link id="favicon" rel="icon" href="/favicon.ico" />
+    
+    <!-- SEO & Meta Tags -->
     <meta name="description" content="Jugnu Nagar — Full Stack Developer building clean, fast, and scalable web applications. Portfolio, services, work, and contact." />
     <link rel="canonical" href="https://jugnunagar.dev/" />
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="#000000" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta property="og:title" content="Jugnu Nagar — Full Stack Developer" />
     <meta property="og:description" content="Clean, fast, and scalable web apps. View services, projects, and get in touch." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jugnunagar.dev/" />
     <meta property="og:image" content="/og-image.jpg" />
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
     <script>
       tailwind.config = {
+        darkMode: 'class', // Enables dark mode based on parent class
         theme: {
           extend: {
             fontFamily: {
@@ -45,14 +54,18 @@
             },
             boxShadow: {
               'soft': '0 10px 25px -10px rgba(2, 6, 23, 0.15)',
+              'glow': '0 0 20px rgba(37, 99, 235, 0.5)',
             },
             borderRadius: {
               'xl': '0.9rem',
             },
+            // --- PREMIUM ANIMATIONS ---
             animation: {
               'spin-slow': 'spin 20s linear infinite',
               'spin-reverse': 'spin 15s linear infinite reverse',
               'pulse-slow': 'pulse 3s ease-in-out infinite',
+              'spotlight': 'spotlight 2s ease .75s 1 forwards',
+              'shimmer': 'shimmer 2s linear infinite',
             },
             keyframes: {
               spin: {
@@ -62,12 +75,28 @@
               pulse: {
                 '0%, 100%': { opacity: '0.3' },
                 '50%': { opacity: '1' },
+              },
+              // Optimized Spotlight for the Hero Section
+              spotlight: {
+                '0%': { 
+                  opacity: '0',
+                  transform: 'translate(-72%, -62%) scale(0.5)'
+                },
+                '100%': { 
+                  opacity: '1',
+                  transform: 'translate(-50%, -40%) scale(1)'
+                },
+              },
+              shimmer: {
+                from: { backgroundPosition: "0 0" },
+                to: { backgroundPosition: "-200% 0" },
               }
             }
           },
         },
       }
     </script>
+    
     <style>
       body {
         -webkit-font-smoothing: antialiased;
@@ -77,26 +106,39 @@
       h1, h2, h3, h4 {
         letter-spacing: -0.01em;
       }
-      h1 { line-height: 1.1; }
-      h2 { line-height: 1.15; }
-      h3 { line-height: 1.2; }
-      p { line-height: 1.7; }
+      
+      /* --- Custom Grid Backgrounds for Hero --- */
+      .bg-grid-white {
+        background-size: 40px 40px;
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      }
+      .bg-grid-black {
+        background-size: 40px 40px;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.1.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
-    "react/": "https://aistudiocdn.com/react@^19.1.1/",
-    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.3"
-  }
-}
-</script>
-</head>
-  <body class="font-sans text-gray-700 bg-gray-50">
+
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.1.1",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+        "react/": "https://aistudiocdn.com/react@^19.1.1/",
+        "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.3"
+      }
+    }
+    </script>
+  </head>
+  
+  <!-- Switched to Dark Background for Premium Effect -->
+  <body class="font-sans text-slate-300 bg-black selection:bg-brand-blue selection:text-white">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:bg-white focus:ring-2 focus:ring-brand-blue focus:px-3 focus:py-2 rounded">Skip to content</a>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    
     <div id="root" role="application"></div>
+    
     <script type="module" src="/index.tsx"></script>
     <script type="module">
       import iconUrl from '/components/jugnu-nagar.jpg?url';
