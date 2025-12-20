@@ -4,10 +4,8 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
-import BlogPage from './components/BlogPage';
 import AdminPage from './components/AdminPage';
 import NotFoundPage from './components/NotFoundPage';
-import BlogPostPage from './components/BlogPostPage';
 // Removed dropdown pages
 
 const ScrollManager: React.FC = () => {
@@ -47,8 +45,6 @@ const App: React.FC = () => {
         <main className="pt-20">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:slug" element={<BlogPostPage />} />  {/* Changed from ":slug" to "/blog/:slug" */}
             <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
