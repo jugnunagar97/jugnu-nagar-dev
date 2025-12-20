@@ -10,7 +10,7 @@ const ContactSection: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formRef.current || sending) return;
-    
+
     try {
       setSending(true);
       setStatus('idle');
@@ -20,14 +20,14 @@ const ContactSection: React.FC = () => {
         reply_to: String(data.get('reply_to') || ''),
         message: String(data.get('message') || ''),
       };
-      
+
       const base = import.meta.env.VITE_API_BASE || '';
       const res = await fetch(`${base}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      
+
       if (!res.ok) throw new Error('Mailer error');
       setStatus('ok');
       formRef.current.reset();
@@ -44,7 +44,7 @@ const ContactSection: React.FC = () => {
       {/* Background Effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-600/10 blur-[100px] rounded-full pointer-events-none" />
-      
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -56,11 +56,10 @@ const ContactSection: React.FC = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Let's work <span className="text-blue-500">together</span>
+              Ready to <span className="text-blue-500">Ship?</span>
             </h2>
             <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-              Have a project in mind? I'm always open to discussing new opportunities and interesting challenges. 
-              Drop me a line and let's see how we can bring your vision to life.
+              Tell me what you're building. I'm direct. If I'm not the right fit, I'll tell you. If I am, we'll build something great.
             </p>
           </motion.div>
 
@@ -170,8 +169,8 @@ const ContactSection: React.FC = () => {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-neutral-400">
                 <div className="flex items-center gap-3">
                   <MailIcon className="w-5 h-5 text-blue-500" />
-                  <a 
-                    href="mailto:dev.nagarjugnu@gmail.com" 
+                  <a
+                    href="mailto:dev.nagarjugnu@gmail.com"
                     className="hover:text-white transition-colors"
                   >
                     dev.nagarjugnu@gmail.com

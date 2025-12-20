@@ -71,12 +71,12 @@ const PinPerspective = ({ title, href }: { title?: string; href?: string }) => {
           style={{ perspective: "1000px", transform: "rotateX(70deg) translateZ(0)" }}
           className="absolute left-1/2 top-1/2 ml-[0.09375rem] mt-4 -translate-x-1/2 -translate-y-1/2"
         >
-            <motion.div
-                initial={{ opacity: 0, scale: 0, x: "-50%", y: "-50%" }}
-                animate={{ opacity: [0, 1, 0.5, 0], scale: 1, z: 0 }}
-                transition={{ duration: 6, repeat: Infinity, delay: 0 }}
-                className="absolute left-1/2 top-1/2  h-[11.25rem] w-[11.25rem] rounded-[50%] bg-sky-500/[0.08] shadow-[0_8px_16px_rgb(0_0_0/0.4)]"
-            ></motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0, x: "-50%", y: "-50%" }}
+            animate={{ opacity: [0, 1, 0.5, 0], scale: 1, z: 0 }}
+            transition={{ duration: 6, repeat: Infinity, delay: 0 }}
+            className="absolute left-1/2 top-1/2  h-[11.25rem] w-[11.25rem] rounded-[50%] bg-sky-500/[0.08] shadow-[0_8px_16px_rgb(0_0_0/0.4)]"
+          ></motion.div>
         </div>
       </div>
     </motion.div>
@@ -86,59 +86,59 @@ const PinPerspective = ({ title, href }: { title?: string; href?: string }) => {
 const Work = () => {
   return (
     <section id="work" className="py-24 bg-neutral-950 w-full">
-        <div className="container mx-auto px-4">
-            <div className="text-center mb-20">
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Featured Work</h2>
-                <p className="text-neutral-400 max-w-lg mx-auto">
-                    Hover over the cards to see the 3D perspective effect.
-                </p>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-16 mt-10">
-                {WORK_PROJECTS.map((project) => (
-                    <div key={project.name} className="h-[25rem] w-[20rem] flex items-center justify-center sm:w-96 w-[80vw]">
-                        <PinContainer title={project.name} href={project.projectLink}>
-                            <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
-                                <div className="flex items-start justify-between mb-2">
-                                    <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
-                                        {project.name}
-                                    </h3>
-                                    {project.githubLink && (
-                                        <a
-                                            href={project.githubLink}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="text-slate-400 hover:text-white transition-colors z-50"
-                                            aria-label="View on GitHub"
-                                        >
-                                            <GithubIcon className="w-4 h-4" />
-                                        </a>
-                                    )}
-                                </div>
-                                <div className="text-base !m-0 !p-0 font-normal">
-                                    <span className="text-slate-500 ">
-                                        {project.description.substring(0, 80)}...
-                                    </span>
-                                </div>
-                                <div className="flex flex-1 w-full rounded-lg mt-4 bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 overflow-hidden relative">
-                                    <img 
-                                        src={project.imageUrl} 
-                                        alt={project.name}
-                                        className="absolute inset-0 w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                                    />
-                                    {project.isConfidential && (
-                                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
-                                            <p className="font-bold text-white uppercase tracking-widest border border-white/50 px-4 py-2">Confidential</p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </PinContainer>
-                    </div>
-                ))}
-            </div>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Projects I've Shipped</h2>
+          <p className="text-neutral-400 max-w-lg mx-auto">
+            Just real apps running in production. Hover over the cards to see the 3D perspective effect.
+          </p>
         </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-16 mt-10">
+          {WORK_PROJECTS.map((project) => (
+            <div key={project.name} className="h-[25rem] w-[20rem] flex items-center justify-center sm:w-96 w-[80vw]">
+              <PinContainer title={project.name} href={project.projectLink}>
+                <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
+                      {project.name}
+                    </h3>
+                    {project.githubLink && (
+                      <a
+                        href={project.githubLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-slate-400 hover:text-white transition-colors z-50"
+                        aria-label="View on GitHub"
+                      >
+                        <GithubIcon className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                  <div className="text-base !m-0 !p-0 font-normal">
+                    <span className="text-slate-500 ">
+                      {project.description.substring(0, 80)}...
+                    </span>
+                  </div>
+                  <div className="flex flex-1 w-full rounded-lg mt-4 bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 overflow-hidden relative">
+                    <img
+                      src={project.imageUrl}
+                      alt={project.name}
+                      className="absolute inset-0 w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                    />
+                    {project.isConfidential && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
+                        <p className="font-bold text-white uppercase tracking-widest border border-white/50 px-4 py-2">Confidential</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </PinContainer>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };

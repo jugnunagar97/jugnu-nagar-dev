@@ -59,12 +59,12 @@ const Hero = () => {
     <section className="h-screen w-full rounded-md flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
       {/* 1. The Moving Spotlight */}
       <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
-      
+
       <GridBackground />
 
       <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-          
+
           {/* Text Content */}
           <div className="flex-1 text-center md:text-left">
             <motion.div
@@ -73,7 +73,7 @@ const Hero = () => {
               transition={{ duration: 0.5 }}
             >
               <h2 className="text-xs md:text-sm font-bold tracking-[0.2em] text-blue-400 uppercase mb-4">
-                Full Stack Developer & Architect
+                Full Stack Developer
               </h2>
             </motion.div>
 
@@ -83,8 +83,8 @@ const Hero = () => {
               transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
               className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50"
             >
-              Engineering the <br />
-              <span className="text-blue-500">Digital Future.</span>
+              I Build Fast, Scalable <br />
+              <span className="text-blue-500">Web Apps That Convert.</span>
             </motion.h1>
 
             <motion.p
@@ -93,8 +93,7 @@ const Hero = () => {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="mt-6 font-normal text-base text-neutral-300 max-w-lg mx-auto md:mx-0 leading-relaxed"
             >
-              I build pixel-perfect, engaging, and accessible digital experiences. 
-              Currently architecting scalable solutions for <span className="text-blue-400 font-semibold">Apple</span> and <span className="text-blue-400 font-semibold">Binance</span>.
+              I’m Jugnu. I don't just write code. I build systems that work. From MVP to production, I help founders and businesses ship complex features without the headache.
             </motion.p>
 
             <motion.div
@@ -103,64 +102,64 @@ const Hero = () => {
               transition={{ delay: 0.8, duration: 0.5 }}
               className="mt-8 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start"
             >
-               {/* Custom Button with moving border gradient */}
-               <button className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
-                  <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-                  <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-medium text-white backdrop-blur-3xl hover:bg-slate-900 transition-colors">
-                    View My Work
-                  </span>
-                </button>
-                
-                <button className="text-neutral-300 hover:text-white transition-colors font-medium px-6">
-                  Contact Me
-                </button>
-                
-                <motion.a
-                  href="https://github.com/dev-nagarjugnu"
-                  target="_blank"
-                  rel="noreferrer"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-700 bg-neutral-900/50 hover:bg-neutral-800 hover:border-blue-500/50 text-neutral-300 hover:text-white transition-all"
-                  aria-label="GitHub Profile"
-                >
-                  <GithubIcon className="w-5 h-5" />
-                </motion.a>
+              {/* Custom Button with moving border gradient */}
+              <a href="#work" className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-8 py-1 text-sm font-medium text-white backdrop-blur-3xl hover:bg-slate-900 transition-colors">
+                  See What I've Built
+                </span>
+              </a>
+
+              <a href="#contact" className="text-neutral-300 hover:text-white transition-colors font-medium px-6 flex items-center justify-center">
+                Contact Me
+              </a>
+
+              <motion.a
+                href="https://github.com/dev-nagarjugnu"
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-700 bg-neutral-900/50 hover:bg-neutral-800 hover:border-blue-500/50 text-neutral-300 hover:text-white transition-all"
+                aria-label="GitHub Profile"
+              >
+                <GithubIcon className="w-5 h-5" />
+              </motion.a>
             </motion.div>
           </div>
 
           {/* Image with Floating/Hover Effect */}
-          <motion.div 
+          <motion.div
             className="flex-1 relative"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
           >
             <div className="relative w-72 h-72 md:w-96 md:h-96 mx-auto">
-                {/* Glowing orb behind */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-[80px] opacity-50 animate-pulse"></div>
-                
-                <motion.div 
-                    whileHover={{ scale: 1.05, rotate: 2 }}
-                    className="relative w-full h-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
-                >
-                    <img src={profileImg} alt="Jugnu" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" />
-                    
-                    {/* Glass overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent p-6 flex flex-col justify-end">
-                         <div className="flex gap-2">
-                            <span className="w-3 h-3 rounded-full bg-red-500"></span>
-                            <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
-                            <span className="w-3 h-3 rounded-full bg-green-500"></span>
-                         </div>
-                    </div>
-                </motion.div>
+              {/* Glowing orb behind */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-[80px] opacity-50 animate-pulse"></div>
+
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: 2 }}
+                className="relative w-full h-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
+              >
+                <img src={profileImg} alt="Jugnu" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" />
+
+                {/* Glass overlay */}
+                <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent p-6 flex flex-col justify-end">
+                  <div className="flex gap-2">
+                    <span className="w-3 h-3 rounded-full bg-red-500"></span>
+                    <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
+                    <span className="w-3 h-3 rounded-full bg-green-500"></span>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
 
         </div>
       </div>
-      
+
       <style>{`
         .bg-grid-white\/\[0\.02\] { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px); }
         .bg-grid-black\/\[0\.04\] { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px); }
