@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { cn } from "../src/lib/utils";
 import profileImg from './jugnu-nagar.jpg'; // Keep your image
+import { GithubIcon } from './icons/GithubIcon';
 
 // --- SPOTLIGHT COMPONENT ---
 const Spotlight = ({ className, fill = "white" }: { className?: string; fill?: string }) => {
@@ -113,6 +114,18 @@ const Hero = () => {
                 <button className="text-neutral-300 hover:text-white transition-colors font-medium px-6">
                   Contact Me
                 </button>
+                
+                <motion.a
+                  href="https://github.com/dev-nagarjugnu"
+                  target="_blank"
+                  rel="noreferrer"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-700 bg-neutral-900/50 hover:bg-neutral-800 hover:border-blue-500/50 text-neutral-300 hover:text-white transition-all"
+                  aria-label="GitHub Profile"
+                >
+                  <GithubIcon className="w-5 h-5" />
+                </motion.a>
             </motion.div>
           </div>
 

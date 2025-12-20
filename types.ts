@@ -32,6 +32,7 @@ export interface WorkProject {
   imageUrl: string;
   tools: string[];
   projectLink: string;
+  githubLink?: string;
   isConfidential?: boolean;
 }
 

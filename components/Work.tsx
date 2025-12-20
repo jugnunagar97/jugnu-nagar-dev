@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { WORK_PROJECTS } from "../constants";
 import { motion } from "framer-motion";
 import { cn } from "../src/lib/utils";
+import { GithubIcon } from "./icons/GithubIcon";
 
 // --- 3D CARD COMPONENT ---
 const PinContainer = ({
@@ -98,9 +99,23 @@ const Work = () => {
                     <div key={project.name} className="h-[25rem] w-[20rem] flex items-center justify-center sm:w-96 w-[80vw]">
                         <PinContainer title={project.name} href={project.projectLink}>
                             <div className="flex basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2 w-[20rem] h-[20rem] ">
-                                <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
-                                    {project.name}
-                                </h3>
+                                <div className="flex items-start justify-between mb-2">
+                                    <h3 className="max-w-xs !pb-2 !m-0 font-bold  text-base text-slate-100">
+                                        {project.name}
+                                    </h3>
+                                    {project.githubLink && (
+                                        <a
+                                            href={project.githubLink}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="text-slate-400 hover:text-white transition-colors z-50"
+                                            aria-label="View on GitHub"
+                                        >
+                                            <GithubIcon className="w-4 h-4" />
+                                        </a>
+                                    )}
+                                </div>
                                 <div className="text-base !m-0 !p-0 font-normal">
                                     <span className="text-slate-500 ">
                                         {project.description.substring(0, 80)}...

@@ -18,7 +18,7 @@ const About: React.FC = () => {
         </div>
         <div className="text-lg text-gray-600 space-y-6 text-left leading-relaxed">
           <p>
-            I am a freelance full-stack developer. I have a strong background as a software architect and have successfully led teams as a <a href="#" className="text-brand-blue font-semibold hover:underline">fractional CTO</a>. I have worked with clients from diverse industries worldwide. I have successfully delivered over 20 projects for a range of clients, including solo founders, early stage startups, growing startups, digital agencies, and notable companies like Apple and Binance.
+            I am a freelance full-stack developer. I have worked with clients from diverse industries worldwide. I have successfully delivered over 20 projects for a range of clients, including solo founders, early stage startups, growing startups, digital agencies, and notable companies like Apple and Binance.
           </p>
           <p>
             I create fast, clean, and maintainable web applications, ready to scale from few users to thousands. I can help you deliver a seamless and engaging experience to your users. Background in computer science and ability as a full-stack developer (front-end and back-end) allow me to create everything from small business websites to custom web applications.

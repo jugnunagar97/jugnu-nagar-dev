@@ -97,41 +97,44 @@ export const CODE_SAMPLES_DATA: CodeSample[] = [
 
 const allProjects: WorkProject[] = [
     {
-        name: 'Project Alpha',
-        description: 'A cutting-edge web platform for a fintech startup, providing real-time data analytics and visualizations.',
-        longDescription: 'Project Alpha is a comprehensive financial analytics platform designed for traders and investors. It features a customizable dashboard, real-time market data streaming via WebSockets, and advanced charting tools. I led the front-end development, building a highly performant and responsive interface with React and TypeScript.',
-        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-        tools: ['React', 'TypeScript', 'D3.js', 'Node.js', 'GraphQL', 'PostgreSQL'],
-        projectLink: '#',
+        name: 'Task Partner',
+        description: 'A Fiverr-like marketplace platform where users can post short-term projects and hire virtual assistants to complete tasks efficiently.',
+        longDescription: 'Task Partner is a comprehensive marketplace platform similar to Fiverr, designed to connect clients with virtual assistants for short-term projects. The platform features a modern, user-friendly interface where clients can post gigs, browse available virtual assistants, and manage their projects seamlessly. Built with a focus on scalability and user experience, the platform includes features like project posting, talent matching, secure communication, and project management tools. The application is fully deployed and live, demonstrating production-ready code with clean architecture and responsive design.',
+        imageUrl: '/images/task-partner.png',
+        tools: ['TypeScript', 'React', 'Next.js', 'Node.js', 'Tailwind CSS', 'Vercel'],
+        projectLink: 'https://taskpartner.us.cc/',
+        githubLink: 'https://github.com/jugnunagar97/gig-snap',
     },
     {
-        name: 'Confidential Project (Apple)',
-        description: 'An internal tool for Apple to manage marketing campaigns and assets. Due to NDA, details cannot be shared.',
-        longDescription: 'This was an internal project developed for Apple. The application streamlined the workflow for the global marketing team, providing tools for asset management, campaign tracking, and performance reporting. The project is confidential, and further details are protected under a non-disclosure agreement.',
-        imageUrl: 'https://images.unsplash.com/photo-1588196749107-4246d5600c28?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80',
-        tools: ['React', 'Redux', 'JavaScript', 'Internal APIs'],
-        projectLink: '#',
-        isConfidential: true,
+        name: 'Foundation Brothers',
+        description: 'A modern corporate website for a leading construction company in Rajasthan, showcasing services, projects, and client testimonials with a clean, professional design.',
+        longDescription: 'Foundation Brothers is a comprehensive corporate website for a construction and real estate company based in Rajasthan. The website features a modern, professional design with multiple sections including hero area, services showcase, project portfolio, FAQ section, and contact forms. Built with a focus on user experience and conversion optimization, the site showcases the company\'s construction services, commercial projects, interior design capabilities, and home renovation expertise. The application includes interactive elements, responsive design, and seamless navigation, demonstrating a polished client-facing web presence.',
+        imageUrl: '/images/foundation-brothers.png',
+        tools: ['TypeScript', 'React', 'Vite', 'Tailwind CSS', 'Vercel'],
+        projectLink: 'https://www.foundationbrothers.in/',
+        githubLink: 'https://github.com/jugnunagar97/foundation-brothers',
     },
     {
-        name: 'E-commerce Platform',
-        description: 'A bespoke e-commerce solution for a fashion brand, featuring a custom CMS and Stripe integration.',
-        longDescription: 'This project involved building a complete e-commerce website from the ground up for a luxury fashion retailer. Key features include a product catalog with advanced filtering, a secure checkout process powered by Stripe, customer account management, and a custom-built content management system (CMS) for easy updates by the client.',
-        imageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-        tools: ['Next.js', 'React', 'Node.js', 'MongoDB', 'Stripe', 'Tailwind CSS'],
-        projectLink: '#',
+        name: 'Lease Ezy',
+        description: 'A modern web application for managing lease agreements and rental properties, providing an easy-to-use platform for property owners and tenants.',
+        longDescription: 'Lease Ezy is a comprehensive lease management platform designed to simplify the process of creating, managing, and tracking lease agreements. The application provides a streamlined interface for property owners to manage their rental properties and for tenants to handle their lease documents. Built with modern web technologies, the platform offers features such as lease creation, document management, payment tracking, and automated reminders. The application demonstrates clean architecture, responsive design, and user-friendly workflows for efficient lease management.',
+        imageUrl: '/images/lease-ezy.png',
+        tools: ['TypeScript', 'React', 'Next.js', 'Tailwind CSS', 'Vercel'],
+        projectLink: 'https://leaseezy.vercel.app/',
+        githubLink: 'https://github.com/dev-nagarjugnu/leaseezy',
     },
     {
-        name: 'SaaS Dashboard',
-        description: 'A responsive dashboard for a B2B SaaS product, enabling users to manage their accounts and services.',
-        longDescription: 'I designed and developed the user-facing dashboard for a SaaS company providing cloud infrastructure monitoring. The dashboard allows users to view real-time metrics, configure alerts, manage team members, and handle billing. The focus was on creating an intuitive and data-rich user experience.',
-        imageUrl: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1406&q=80',
-        tools: ['React', 'TypeScript', 'Redux Toolkit', 'Chart.js', 'Firebase'],
-        projectLink: '#',
+        name: 'SEO Website',
+        description: 'A modern SEO service website showcasing SEO tools, services, and resources to help businesses improve their search engine rankings and online visibility.',
+        longDescription: 'SEO Website (SEO Buddy) is a comprehensive SEO service platform designed to help businesses improve their search engine optimization. The website features a modern, conversion-focused design with sections highlighting SEO services, tools, case studies, and resources. Built with performance and SEO best practices in mind, the platform showcases SEO expertise through an intuitive interface, service packages, and educational content. The application demonstrates modern web development practices with fast load times, responsive design, and optimized user experience for both desktop and mobile devices.',
+        imageUrl: '/images/seo-website.png',
+        tools: ['TypeScript', 'React', 'Next.js', 'Tailwind CSS', 'Vercel'],
+        projectLink: 'https://seobuddy-website.vercel.app/',
+        githubLink: 'https://github.com/dev-nagarjugnu/seobuddy-website',
     }
 ];
 
-export const WORK_PROJECTS = allProjects.slice(0, 3);
+export const WORK_PROJECTS = allProjects;
 export const ALL_PROJECTS = allProjects;
 
 export const TESTIMONIALS_DATA: Testimonial[] = [
