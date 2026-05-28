@@ -118,6 +118,16 @@ const allProjects: WorkProject[] = [
 export const WORK_PROJECTS = allProjects;
 export const ALL_PROJECTS = allProjects;
 
+// Add Stealth Supps project with problems solved inline
+allProjects.push({
+  name: 'Stealth Supps',
+  description: 'Shopify store optimization: fixed performance, UX, and conversion issues on live site.',
+  longDescription: 'Conducted comprehensive audit and fixes on stealthsupps.in (live Shopify store). Issues Solved: Performance optimization (35% LCP improvement, eliminated CLS), mobile responsiveness fixes on product & checkout pages, Liquid template corrections, checkout flow streamlining, SEO & accessibility improvements (semantic HTML, ARIA labels), image optimization with lazy loading.',
+  imageUrl: '/images/stealthsupps.png',
+  tools: ['Shopify', 'Liquid', 'JavaScript', 'Performance', 'SEO', 'UX'],
+  projectLink: 'https://stealthsupps.in/',
+});
+
 export const TESTIMONIALS_DATA: Testimonial[] = [
   { quote: `Jugnu delivered our MVP in weeks, not months, without compromising on quality. Clear communication and strong ownership throughout.`, author: 'Sarah Nolan', company: 'Founder, Fintech Startup' },
   { quote: `Outstanding front-end work. Our Core Web Vitals improved across the board and conversions followed.`, author: 'Marco Ruiz', company: 'Head of Growth, DTC Brand' },
